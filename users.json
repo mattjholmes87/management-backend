@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1001",
+    "email": "",
+    "password": "",
+    "firstname": "",
+    "surname": "",
+    "staffcode": "",
+    "groups": ["SLT", "HOD", "Teacher"],
+    "subject": "",
+    "random": "",
+    "level": ""
+  },
+  {
+    "id": "1002",
+    "email": "",
+    "password": "",
+    "firstname": "",
+    "surname": "",
+    "staffcode": "",
+    "groups": ["Teacher"],
+    "subject": "",
+    "random": "",
+    "level": ""
+  }
+]
