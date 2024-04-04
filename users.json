@@ -1,7 +1,7 @@
 [
   {
-    "id": "1001",
-    "email": "a@b.c",
+    "id": 1001,
+    "email": "x@y.z",
     "password": "123",
     "firstname": "Matt",
     "surname": "Holmes",
@@ -12,7 +12,7 @@
     "level": "1"
   },
   {
-    "id": "1002",
+    "id": 1002,
     "email": "",
     "password": "",
     "firstname": "",
