@@ -1,4 +1,5 @@
 const express = require("express");
+const { logging, userAgent } = require("./middleware/test");
 const server = express();
 
 //Middleware
@@ -8,6 +9,16 @@ server.use(express.json()); //handle the body - wouldn't see body without this l
 //Importing my router
 server.use("/todos", require("./routes/todos"));
 server.use("/users", require("./routes/users"));
+
+//logging middleware
+server.use(logging);
+//hacker prevent middles ware - remove for testing
+// server.use(userAgent);
+
+//Test script
+server.get("/", (req, res) => {
+  res.send("Hello from the GET method / route");
+});
 
 const PORT = process.env.PORT || 6001; //use server port but if not use 6001
 server.listen(PORT, () => {
