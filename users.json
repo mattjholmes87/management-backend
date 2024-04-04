@@ -1,15 +1,15 @@
 [
   {
     "id": "1001",
-    "email": "",
-    "password": "",
-    "firstname": "",
-    "surname": "",
-    "staffcode": "",
+    "email": "a@b.c",
+    "password": "123",
+    "firstname": "Matt",
+    "surname": "Holmes",
+    "staffcode": "MHO",
     "groups": ["SLT", "HOD", "Teacher"],
-    "subject": "",
-    "random": "",
-    "level": ""
+    "subject": "Mathematics",
+    "bup": "",
+    "level": "1"
   },
   {
     "id": "1002",
@@ -20,7 +20,7 @@
     "staffcode": "",
     "groups": ["Teacher"],
     "subject": "",
-    "random": "",
+    "bup": "",
     "level": ""
   }
 ]

@@ -2,13 +2,20 @@ const express = require("express");
 const { logging, userAgent } = require("./middleware/test");
 const server = express();
 
+//User state
+const users = [];
+
 //Middleware
 server.use(express.static("public")); //allows access to items in public file without writing a direct route for static files
 server.use(express.json()); //handle the body - wouldn't see body without this line as its sent seperately to the post request
+server.use(function (req, res, next) {
+  req.users = users;
+  next();
+}); //Middleware to add users array to the requets
 
 //Importing my router
 server.use("/todos", require("./routes/todos"));
-server.use("/users", require("./routes/users"));
+server.use("/user", require("./routes/user"));
 
 //logging middleware
 server.use(logging);
