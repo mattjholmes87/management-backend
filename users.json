@@ -2,7 +2,7 @@
   {
     "id": 1001,
     "email": "x@y.z",
-    "password": "123",
+    "password": "2e0a86a660a3f40f309f7e0b5236285aac58fb2bbb863ca6a455847d9b755f84",
     "firstname": "Matt",
     "surname": "Holmes",
     "staffcode": "MHO",
@@ -13,8 +13,8 @@
   },
   {
     "id": 1002,
-    "email": "",
-    "password": "",
+    "email": "b@c.d",
+    "password": "2e0a86a660a3f40f309f7e0b5236285aac58fb2bbb863ca6a455847d9b755f84",
     "firstname": "",
     "surname": "",
     "staffcode": "",

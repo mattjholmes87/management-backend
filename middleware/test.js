@@ -1,3 +1,5 @@
+const { getUserIndexById } = require("../routes/utils");
+
 //logging middleware
 function logging(req, res, next) {
   console.log("Get verb used to access / route");
@@ -15,4 +17,20 @@ function userAgent(req, res, next) {
   }
 }
 
-module.exports = { logging, userAgent };
+//Auth Middleware
+
+function checkToken(req, res, next) {
+  const user = req.users.find((user) => {
+    return user.token === Number(req.headers.token);
+  });
+
+  if (user) {
+    req.authedUser = user;
+    next();
+    return;
+  }
+
+  res.send({ status: 0, reason: "Bad token" });
+}
+
+module.exports = { logging, userAgent, checkToken };
