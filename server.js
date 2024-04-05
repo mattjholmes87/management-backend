@@ -1,6 +1,7 @@
 const express = require("express");
 const { logging, userAgent } = require("./middleware/test");
 const server = express();
+const cors = require("cors");
 const userData = require("./users.json");
 
 //User state
@@ -8,8 +9,9 @@ const users = userData;
 const lastUserId = { value: 2385394 };
 
 //Middleware
-server.use(express.static("public")); //allows access to items in public file without writing a direct route for static files
+server.use(cors()); //Turns off browser security
 server.use(express.json()); //handle the body - wouldn't see body without this line as its sent seperately to the post request
+server.use(express.static("public")); //allows access to items in public file without writing a direct route for static files
 server.use(function (req, res, next) {
   req.users = users;
   req.lastUserId = lastUserId;
