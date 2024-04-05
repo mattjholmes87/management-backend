@@ -23,6 +23,7 @@ server.use("/user/post", require("./routes/user/post"));
 server.use("/user/delete", require("./routes/user/delete"));
 server.use("/user/get", require("./routes/user/get"));
 server.use("/user/patch", require("./routes/user/patch"));
+server.use("/user/login", require("./routes/user/login"));
 
 //logging middleware
 server.use(logging);
