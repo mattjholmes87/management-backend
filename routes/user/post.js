@@ -1,12 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const sha256 = require("sha256");
-const {
-  getUserByEmail,
-  getUserIndexById,
-  getUserByEmailAndPassword,
-  getRV,
-} = require("../utils");
+const { getUserByEmail, getRV, getRid } = require("../utils");
 const { kw } = require("../../kw");
 
 //Add a user
@@ -31,6 +26,8 @@ router.post("/new", (req, res) => {
   req.body.id = lastUserId.value;
 
   //push to state
+  token = getRid();
+  req.body.token.push(token);
   users.push(req.body);
   res.send({ status: 1, reason: "New user added" });
 });

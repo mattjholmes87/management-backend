@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const sha256 = require("sha256");
-const { getUserByEmail, getUserIndexById } = require("../utils");
+const { getUserIndexById, getUserIndexByToken } = require("../utils");
 const { kw } = require("../../kw");
+const { checkToken } = require("../../middleware/test");
 
 //Update a user
-router.patch("/", (req, res) => {
-  const { id } = req.query;
-
+router.patch("/", checkToken, (req, res) => {
   if (
     !(
       req.body.email ||
@@ -25,20 +24,9 @@ router.patch("/", (req, res) => {
     return;
   }
 
-  if (!id || Number.isNaN(Number(id)) || id <= 0) {
-    res.send({ status: 0, reason: "Missing or invalid id" });
-    return;
-  }
-
-  const indexOf = getUserIndexById(req.users, id);
-
-  if (indexOf === -1) {
-    res.send({ status: 0, reason: "User not found, check ID" });
-    return;
-  }
+  const indexOf = getUserIndexByToken(req.users, req.headers.token);
 
   //Rehash password
-
   if (req.body.password) {
     req.body.password = sha256(req.body.password + kw);
   }

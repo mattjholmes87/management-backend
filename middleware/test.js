@@ -21,9 +21,6 @@ function userAgent(req, res, next) {
 
 function checkToken(req, res, next) {
   const user = req.users.find((user) => {
-    console.log(req.users);
-    console.log(req.headers.token);
-    console.log(user.token);
     return user.token.includes(req.headers.token);
   });
 

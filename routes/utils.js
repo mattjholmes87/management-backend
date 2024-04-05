@@ -19,6 +19,12 @@ function getUserIndexById(users, id) {
   });
 }
 
+function getUserIndexByToken(users, token) {
+  return users.findIndex((user) => {
+    return user.token.includes(token);
+  });
+}
+
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -42,4 +48,5 @@ module.exports = {
   getUserIndexById,
   getUserByEmailAndPassword,
   getRid,
+  getUserIndexByToken,
 };

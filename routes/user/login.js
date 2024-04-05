@@ -30,6 +30,16 @@ router.post("/", (req, res) => {
 
 //Logout
 router.delete("/", checkToken, (req, res) => {
+  req.authedUser.token.splice(
+    req.authedUser.token.indexOf(req.headers.token),
+    1
+  );
+
+  res.send({ status: 1, reason: "Logged out succesfully" });
+});
+
+//Logout all accounts of user
+router.delete("/logoutAll", checkToken, (req, res) => {
   req.authedUser.token = [];
 
   res.send({ status: 1, reason: "Logged out succesfully" });
