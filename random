@@ -1,0 +1,8 @@
+for (let i = 0; i < body.length; i++) {
+  if (body[i][0] in req.users[indexOf]) {
+    req.users[indexOf][body[i][0]] = body[i][1];
+  } else {
+    res.send({ status: 0, reason: "Key not found" });
+    break;
+  }
+}
