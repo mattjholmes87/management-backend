@@ -17,12 +17,16 @@ server.use(function (req, res, next) {
 }); //Middleware to add users array to the requets
 
 //Importing my router
-server.use("/todos", require("./routes/todos"));
-server.use("/user", require("./routes/user"));
+server.use("/todos/get", require("./routes/todos/get"));
+server.use("/todos/post", require("./routes/todos/post"));
+server.use("/user/post", require("./routes/user/post"));
+server.use("/user/delete", require("./routes/user/delete"));
+server.use("/user/get", require("./routes/user/get"));
+server.use("/user/patch", require("./routes/user/patch"));
 
 //logging middleware
 server.use(logging);
-//hacker prevent middles ware - remove for testing
+// hacker prevent middles ware - remove for testing
 // server.use(userAgent);
 
 //Test script
