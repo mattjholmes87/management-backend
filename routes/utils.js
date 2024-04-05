@@ -19,13 +19,27 @@ function getUserIndexById(users, id) {
   });
 }
 
-function getRV() {
-  return Math.floor(Math.random() * 7000000000000000);
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function getRid() {
+  let uniqueId = "";
+  let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcedfghijklmnopqrstuvwxyz";
+  let charsDate = (chars += Date.now());
+  let charsLength = charsDate.length;
+  const rndInt = randomIntFromInterval(1, 10);
+
+  for (let i = 0; i < charsLength - rndInt; i++) {
+    uniqueId += charsDate.charAt(Math.floor(Math.random() * charsLength));
+  }
+
+  return uniqueId;
 }
 
 module.exports = {
   getUserByEmail,
   getUserIndexById,
   getUserByEmailAndPassword,
-  getRV,
+  getRid,
 };

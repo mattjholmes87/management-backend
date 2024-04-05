@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const sha256 = require("sha256");
-const { getUserByEmailAndPassword, getRV } = require("../utils");
-const { kw } = require("../../kw");
+const { getUserByEmailAndPassword, getRid } = require("../utils");
 const { checkToken } = require("../../middleware/test");
 
 //Login
@@ -24,14 +23,14 @@ router.post("/", (req, res) => {
     return;
   }
 
-  token = getRV();
-  user.token = token;
+  token = getRid();
+  user.token.push(token);
   res.send({ status: 1, reason: "Match Found!", token: token });
 });
 
 //Logout
 router.delete("/", checkToken, (req, res) => {
-  req.authedUser.token = undefined;
+  req.authedUser.token = [];
 
   res.send({ status: 1, reason: "Logged out succesfully" });
 });

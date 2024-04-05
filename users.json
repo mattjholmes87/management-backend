@@ -9,7 +9,8 @@
     "groups": ["SLT", "HOD", "Teacher"],
     "subject": "Mathematics",
     "bup": "",
-    "level": "1"
+    "level": "1",
+    "token": []
   },
   {
     "id": 1002,
@@ -21,6 +22,7 @@
     "groups": ["Teacher"],
     "subject": "",
     "bup": "",
-    "level": ""
+    "level": "",
+    "token": []
   }
 ]
