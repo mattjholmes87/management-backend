@@ -4,6 +4,24 @@ const server = express();
 const cors = require("cors");
 const userData = require("./users.json");
 
+//Connecting to mySQL
+const mysql = require("mysql");
+var connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "intray",
+});
+
+connection.connect();
+
+connection.query("SHOW tables;", function (error, results, fields) {
+  console.log(results, error);
+  // if (error) throw error;
+  // console.log("The solution is: ", results[0].solution);
+});
+// connection.end();
+
 //User state
 const users = userData;
 const lastUserId = { value: 2385394 };

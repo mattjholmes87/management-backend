@@ -27,7 +27,12 @@ router.post("/new", (req, res) => {
 
   //push to state
   token = getRid();
-  req.body.token.push(token);
+  if (req.body.token) {
+    req.body.token.push(token);
+  } else {
+    req.body.token = [token];
+  }
+
   users.push(req.body);
   res.send({ status: 1, reason: "New user added" });
 });

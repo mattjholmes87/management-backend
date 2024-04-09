@@ -8,9 +8,7 @@
     "staffcode": "MHO",
     "groups": ["SLT", "HOD", "Teacher"],
     "subject": "Mathematics",
-    "bup": "",
-    "level": "1",
-    "token": []
+    "level": "1"
   },
   {
     "id": 1002,
@@ -21,8 +19,6 @@
     "staffcode": "",
     "groups": ["Teacher"],
     "subject": "",
-    "bup": "",
-    "level": "",
-    "token": []
+    "level": ""
   }
 ]

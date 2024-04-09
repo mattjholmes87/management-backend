@@ -20,8 +20,11 @@ function userAgent(req, res, next) {
 //Auth Middleware
 
 function checkToken(req, res, next) {
+  if (!req.headers.token) {
+    return res.send({ status: 0, reason: "No token" });
+  }
   const user = req.users.find((user) => {
-    return user.token.includes(req.headers.token);
+    return user.token && user.token.includes(req.headers.token);
   });
 
   if (user) {
