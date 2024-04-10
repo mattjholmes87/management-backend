@@ -4,9 +4,11 @@ const sha256 = require("sha256");
 const { getUserIndexById, getUserIndexByToken } = require("../utils");
 const { kw } = require("../../kw");
 const { checkToken } = require("../../middleware/test");
+const asyncMySQL = require("../../mysql/driver");
+const { updateAUser } = require("../../mysql/queries");
 
 //Update a user
-router.patch("/", checkToken, (req, res) => {
+router.patch("/", (req, res) => {
   if (
     !(
       req.body.email ||
@@ -14,25 +16,41 @@ router.patch("/", checkToken, (req, res) => {
       req.body.firstname ||
       req.body.surname ||
       req.body.staffcode ||
-      req.body.groups ||
-      req.body.groups ||
-      req.body.subject ||
-      req.body.level
+      req.body.school ||
+      req.body.user_level
     )
   ) {
     res.send({ status: 0, reason: "Missing or invalid data to update" });
     return;
   }
 
-  const indexOf = getUserIndexByToken(req.users, req.headers.token);
-
   //Rehash password
   if (req.body.password) {
-    req.body.password = sha256(req.body.password + kw);
+    asyncMySQL(
+      updateAUser("password", sha256(req.body.password + kw), req.headers.token)
+    );
   }
 
-  //Amend original at indexOf by body of request
-  req.users[indexOf] = { ...req.users[indexOf], ...req.body };
+  if (req.body.email) {
+    asyncMySQL(updateAUser("email", req.body.email, req.headers.token));
+  }
+  if (req.body.firstname) {
+    asyncMySQL(updateAUser("firstname", req.body.firstname, req.headers.token));
+  }
+  if (req.body.surname) {
+    asyncMySQL(updateAUser("surname", req.body.surname, req.headers.token));
+  }
+  if (req.body.staffcode) {
+    asyncMySQL(updateAUser("staffcode", req.body.staffcode, req.headers.token));
+  }
+  if (req.body.school) {
+    asyncMySQL(updateAUser("school", req.body.school, req.headers.token));
+  }
+  if (req.body.user_level) {
+    asyncMySQL(
+      updateAUser("user_level", req.body.user_level, req.headers.token)
+    );
+  }
   res.send({ status: 1, reason: "User updated" });
 });
 

@@ -30,4 +30,17 @@ function deleteAUser(token) {
 		JOIN tokens ON users.user_id = tokens.user_id WHERE token LIKE "${token}";`;
 }
 
-module.exports = { addAUser, addAToken, deleteAToken, deleteAUser };
+function updateAUser(key, value, token) {
+  return `UPDATE users
+            JOIN tokens ON users.user_id = tokens.user_id
+                SET ${key} = "${value}"
+                    WHERE tokens.token LIKE "${token}";`;
+}
+
+module.exports = {
+  addAUser,
+  addAToken,
+  deleteAToken,
+  deleteAUser,
+  updateAUser,
+};
