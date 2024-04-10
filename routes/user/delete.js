@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const { checkToken } = require("../../middleware/test");
-const { getUserIndexByToken } = require("../utils");
+const { deleteAUser } = require("../../mysql/queries");
+const asyncMySQL = require("../../mysql/driver");
 
 //Delete a user
-router.delete("/", checkToken, (req, res) => {
-  const indexOf = getUserIndexByToken(req.users, req.headers.token);
-
-  req.users.splice(indexOf, 1);
+router.delete("/", async (req, res) => {
+  await asyncMySQL(deleteAUser(req.headers.token));
 
   res.send({ status: 1, reason: "User deleted" });
 });

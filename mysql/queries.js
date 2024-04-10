@@ -20,4 +20,14 @@ function addAToken(id, token) {
                         ("${id}", "${token}");`;
 }
 
-module.exports = { addAUser, addAToken };
+function deleteAToken(token) {
+  return `DELETE FROM tokens
+                    WHERE token LIKE "${token}";`;
+}
+
+function deleteAUser(token) {
+  return `DELETE users, tokens FROM users
+		JOIN tokens ON users.user_id = tokens.user_id WHERE token LIKE "${token}";`;
+}
+
+module.exports = { addAUser, addAToken, deleteAToken, deleteAUser };
