@@ -37,10 +37,29 @@ function updateAUser(key, value, token) {
                     WHERE tokens.token LIKE "${token}";`;
 }
 
+function getUserIDFromToken(token) {
+  return `SELECT users.user_id FROM users
+                    JOIN tokens ON users.user_id = tokens.user_id
+                        WHERE tokens.token LIKE "${token}";`;
+}
+
+function getUserDetailsFromToken(token) {
+  return `SELECT * FROM users
+                    JOIN tokens ON users.user_id = tokens.user_id
+                        WHERE tokens.token LIKE "${token}";`;
+}
+
+function getAllUsers() {
+  return `SELECT * FROM users;`;
+}
+
 module.exports = {
   addAUser,
   addAToken,
   deleteAToken,
   deleteAUser,
   updateAUser,
+  getUserIDFromToken,
+  getUserDetailsFromToken,
+  getAllUsers,
 };

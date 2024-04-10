@@ -1,3 +1,5 @@
+const asyncMySQL = require("../mysql/driver");
+const { getUserIDFromToken } = require("../mysql/queries");
 const { getUserIndexById } = require("../routes/utils");
 
 //logging middleware
@@ -19,21 +21,16 @@ function userAgent(req, res, next) {
 
 //Auth Middleware
 
-function checkToken(req, res, next) {
-  if (!req.headers.token) {
-    return res.send({ status: 0, reason: "No token" });
-  }
-  const user = req.users.find((user) => {
-    return user.token && user.token.includes(req.headers.token);
-  });
+async function checkToken(req, res, next) {
+  const results = await asyncMySQL(getUserIDFromToken(req.headers.token));
 
-  if (user) {
-    req.authedUser = user;
+  if (results.length) {
+    console.log(results);
     next();
     return;
   }
 
-  res.send({ status: 0, reason: "Bad token" });
+  res.send({ status: 0, reason: "Bad Token" });
 }
 
 module.exports = { logging, userAgent, checkToken };

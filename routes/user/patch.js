@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const sha256 = require("sha256");
-const { getUserIndexById, getUserIndexByToken } = require("../utils");
+const { getUserIndexById } = require("../utils");
 const { kw } = require("../../kw");
 const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
 const { updateAUser } = require("../../mysql/queries");
 
 //Update a user
-router.patch("/", (req, res) => {
+router.patch("/", checkToken, (req, res) => {
   if (
     !(
       req.body.email ||
