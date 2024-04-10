@@ -13,7 +13,7 @@ function asyncMySQL(query) {
   return new Promise((resolve, reject) => {
     connection.query(query, (error, results) => {
       if (error) {
-        reject();
+        reject(error);
         return;
       }
 

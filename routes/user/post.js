@@ -3,38 +3,35 @@ const router = express.Router();
 const sha256 = require("sha256");
 const { getUserByEmail, getRV, getRid } = require("../utils");
 const { kw } = require("../../kw");
+const asyncMySQL = require("../../mysql/driver");
 
 //Add a user
-router.post("/new", (req, res) => {
-  let { users, lastUserId } = req;
+router.post("/new", async (req, res) => {
+  let { email, password, firstname, surname, staffcode, user_level } = req.body;
 
-  //Checks
-  if (!req.body.email || !req.body.password || !req.body.staffcode) {
+  //Check they exist
+  if (!email || !password || !staffcode || !firstname || !surname) {
     res.send({ status: 0, reason: "Missing data to register" });
   }
 
-  const user = getUserByEmail(users, req.body.email);
-
-  if (user) {
-    res.send({ status: 0, reason: "Email already in use" });
-    return;
-  }
-
   //manipulate input
-  req.body.password = sha256(req.body.password + kw);
-  lastUserId.value = lastUserId.value += Math.floor(Math.random() * 9 + 1);
-  req.body.id = lastUserId.value;
+  password = sha256(password + kw);
 
-  //push to state
+  //create token
   token = getRid();
-  if (req.body.token) {
-    req.body.token.push(token);
-  } else {
-    req.body.token = [token];
-  }
 
-  users.push(req.body);
-  res.send({ status: 1, reason: "New user added" });
+  //talk to DB
+  try {
+    const result = await asyncMySQL(`INSERT INTO users
+                                        (email, password, firstname, surname, staffcode, user_level)
+                                            VALUES 
+                                               ("${email}", "${password}", "${firstname}", "${surname}", "${staffcode}", "${user_level}")`);
+
+    res.send({ status: 1, reason: "New user added", token: token });
+  } catch (e) {
+    console.log(e);
+    res.send({ status: 0, reason: "Unable to add user" });
+  }
 });
 
 module.exports = router;
