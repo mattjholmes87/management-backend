@@ -1,31 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const sha256 = require("sha256");
-const { getUserByEmailAndPassword, getRid } = require("../utils");
+const { getRid } = require("../utils");
 const { checkToken } = require("../../middleware/test");
+const asyncMySQL = require("../../mysql/driver");
+const { kw } = require("../../kw");
 
 //Login
-router.post("/", (req, res) => {
-  //Checks
-  if (!req.body.email || !req.body.password) {
-    res.send({ status: 0, reason: "Missing login data" });
-  }
+router.post("/", async (req, res) => {
+  let { email, password } = req.body;
 
-  //Find User
-  const user = getUserByEmailAndPassword(
-    req.users,
-    req.body.email,
-    req.body.password
-  );
+  password = sha256(password + kw);
 
-  if (!user) {
-    res.send({ status: 0, reason: "Incorrect email or password" });
+  const results = await asyncMySQL(`SELECT * FROM users
+                                     WHERE email LIKE "${email}" AND password LIKE "${password}";`);
+
+  if (results.length > 0) {
+    token = getRid();
+    res.send({ status: 1, reason: "Match Found!", token: token });
+
+    await asyncMySQL(`INSERT INTO tokens
+                        (user_id, token)
+                            VALUES
+                                ("${results[0].user_id}", "${token}");`);
+
     return;
   }
-
-  token = getRid();
-  user.token.push(token);
-  res.send({ status: 1, reason: "Match Found!", token: token });
+  res.send({ status: 0, reason: "Wrong email and/or password" });
 });
 
 //Logout

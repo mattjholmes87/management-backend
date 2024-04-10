@@ -4,13 +4,15 @@ const sha256 = require("sha256");
 const { getUserByEmail, getRV, getRid } = require("../utils");
 const { kw } = require("../../kw");
 const asyncMySQL = require("../../mysql/driver");
+const { addAUser, addAToken } = require("../../mysql/queries");
 
 //Add a user
 router.post("/new", async (req, res) => {
-  let { email, password, firstname, surname, staffcode, user_level } = req.body;
+  let { email, password, firstname, surname, staffcode, user_level, school } =
+    req.body;
 
   //Check they exist
-  if (!email || !password || !staffcode || !firstname || !surname) {
+  if (!email || !password || !staffcode || !firstname || !surname || !school) {
     res.send({ status: 0, reason: "Missing data to register" });
   }
 
@@ -22,10 +24,19 @@ router.post("/new", async (req, res) => {
 
   //talk to DB
   try {
-    const result = await asyncMySQL(`INSERT INTO users
-                                        (email, password, firstname, surname, staffcode, user_level)
-                                            VALUES 
-                                               ("${email}", "${password}", "${firstname}", "${surname}", "${staffcode}", "${user_level}")`);
+    const result = await asyncMySQL(
+      addAUser(
+        email,
+        password,
+        firstname,
+        surname,
+        staffcode,
+        school,
+        user_level
+      )
+    );
+
+    await asyncMySQL(addAToken(result.insertId, token));
 
     res.send({ status: 1, reason: "New user added", token: token });
   } catch (e) {
