@@ -1,30 +1,6 @@
 const { kw } = require("../kw");
 const sha256 = require("sha256");
 
-function getUserByEmail(users, email) {
-  return users.find((user) => {
-    return user.email === email;
-  });
-}
-
-function getUserByEmailAndPassword(users, email, password) {
-  return users.find((user) => {
-    return user.email === email && user.password === sha256(password + kw);
-  });
-}
-
-function getUserIndexById(users, id) {
-  return users.findIndex((user) => {
-    return user.id === Number(id);
-  });
-}
-
-function getUserIndexByToken(users, token) {
-  return users.findIndex((user) => {
-    return user.token.includes(token);
-  });
-}
-
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -69,10 +45,7 @@ function getDateTimeStamp() {
 }
 
 module.exports = {
-  getUserByEmail,
-  getUserIndexById,
-  getUserByEmailAndPassword,
+  randomIntFromInterval,
   getRid,
-  getUserIndexByToken,
   getDateTimeStamp,
 };

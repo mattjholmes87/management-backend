@@ -1,6 +1,5 @@
 const asyncMySQL = require("../mysql/driver");
 const { getUserIDFromToken } = require("../mysql/userQueries");
-const { getUserIndexById } = require("../routes/utils");
 
 //logging middleware
 function logging(req, res, next) {

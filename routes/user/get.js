@@ -4,7 +4,6 @@ const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
 const {
   getAllUsers,
-  getUserIDFromToken,
   getUserDetailsFromToken,
 } = require("../../mysql/userQueries");
 
