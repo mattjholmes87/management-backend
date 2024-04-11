@@ -6,7 +6,7 @@ const {
   getAllUsers,
   getUserIDFromToken,
   getUserDetailsFromToken,
-} = require("../../mysql/queries");
+} = require("../../mysql/userQueries");
 
 //Get single user
 router.get("/id", checkToken, async (req, res) => {

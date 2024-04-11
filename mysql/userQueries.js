@@ -21,8 +21,13 @@ function addAToken(id, token) {
 }
 
 function deleteAToken(token) {
-  return `DELETE FROM tokens
-                    WHERE token LIKE "${token}";`;
+  return `JOIN tokens ON users.user_id = tokens.user_id
+;`;
+}
+
+function deleteAllTokens(id) {
+  return `DELETE tokens FROM tokens
+            WHERE tokens.user_id LIKE "${id}";`;
 }
 
 function deleteAUser(token) {
@@ -62,4 +67,5 @@ module.exports = {
   getUserIDFromToken,
   getUserDetailsFromToken,
   getAllUsers,
+  deleteAllTokens,
 };

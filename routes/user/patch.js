@@ -5,7 +5,7 @@ const { getUserIndexById } = require("../utils");
 const { kw } = require("../../kw");
 const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
-const { updateAUser } = require("../../mysql/queries");
+const { updateAUser } = require("../../mysql/userQueries");
 
 //Update a user
 router.patch("/", checkToken, (req, res) => {
@@ -52,26 +52,6 @@ router.patch("/", checkToken, (req, res) => {
     );
   }
   res.send({ status: 1, reason: "User updated" });
-});
-
-//Add new data to user - would be away to store and retrieve settings
-router.patch("/append", (req, res) => {
-  const { id } = req.query;
-
-  if (!id || Number.isNaN(Number(id)) || id <= 0) {
-    res.send({ status: 0, reason: "Missing or invalid id" });
-    return;
-  }
-
-  const indexOf = getUserIndexById(req.users, id);
-
-  if (indexOf === -1) {
-    res.send({ status: 0, reason: "User not found, check ID" });
-    return;
-  }
-
-  req.users[indexOf].newData = req.body;
-  res.send({ status: 1, reason: "New data added" });
 });
 
 module.exports = router;

@@ -5,7 +5,11 @@ const { getRid } = require("../utils");
 const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
 const { kw } = require("../../kw");
-const { deleteAToken } = require("../../mysql/queries");
+const {
+  deleteAToken,
+  getUserIDFromToken,
+  deleteAllTokens,
+} = require("../../mysql/userQueries");
 
 //Login
 router.post("/", async (req, res) => {
@@ -42,9 +46,13 @@ router.delete("/", checkToken, async (req, res) => {
 });
 
 //Logout all accounts of user
-router.delete("/logoutAll", checkToken, (req, res) => {
-  req.authedUser.token = [];
-
+router.delete("/logoutAll", checkToken, async (req, res) => {
+  if (!req.headers.token) {
+    res.send({ status: "0", reason: "No token" });
+    return;
+  }
+  const id = await asyncMySQL(getUserIDFromToken(req.headers.token));
+  await asyncMySQL(deleteAllTokens(id[0].user_id));
   res.send({ status: 1, reason: "Logged out succesfully" });
 });
 
