@@ -58,6 +58,11 @@ function getAllUsers() {
   return `SELECT * FROM users;`;
 }
 
+function getUserManager(id) {
+  return `SELECT users.line_manager FROM users
+                        WHERE users.user_id LIKE "${id}";`;
+}
+
 module.exports = {
   addAUser,
   addAToken,
@@ -68,4 +73,5 @@ module.exports = {
   getUserDetailsFromToken,
   getAllUsers,
   deleteAllTokens,
+  getUserManager,
 };

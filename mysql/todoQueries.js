@@ -1,21 +1,31 @@
-function addTodo() {
+function addTodo(
+  name,
+  body,
+  priority,
+  complete_by,
+  managed_by,
+  created_by,
+  category
+) {
+  return `INSERT INTO todos
+                (name, body, priority, complete_by, managed_by, created_by, category)
+                    VALUES
+                        ("${name}", "${body}", "${priority}", "${complete_by}", "${managed_by}", "${created_by}", "${category}");`;
+}
+
+function getTodoByID(id) {}
+
+function deleteTodoByID() {
   return `;`;
 }
 
-function getTodo() {
+function updateTodoByID() {
   return `;`;
 }
 
-function deleteTodo() {
-  return `;`;
-}
-
-function updateTodo() {
-  return `;`;
-}
-
-function getUserAllTodos() {
-  return `;`;
+function getUserAllTodos(id, dateTimeStamp) {
+  return `SELECT * FROM todos
+    WHERE todos.complete_by LIKE "${id}" AND todos.display_on < "${dateTimeStamp}";`;
 }
 
 function getUserNumberOfTodos() {
@@ -36,9 +46,9 @@ function getManagerAllSetTodos() {
 
 module.exports = {
   addTodo,
-  getTodo,
-  deleteTodo,
-  updateTodo,
+  getTodoByID,
+  deleteTodoByID,
+  updateTodoByID,
   getUserAllTodos,
   getUserPriorityUserTodos,
   getUserCategoryTodos,

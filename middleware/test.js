@@ -25,7 +25,6 @@ async function checkToken(req, res, next) {
   const results = await asyncMySQL(getUserIDFromToken(req.headers.token));
 
   if (results.length) {
-    console.log(results);
     next();
     return;
   }

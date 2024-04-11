@@ -1,42 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const todoData = require("../../todoData.json");
+const { checkToken } = require("../../middleware/test");
+const { getUserIDFromToken } = require("../../mysql/userQueries");
+const asyncMySQL = require("../../mysql/driver");
+const { getUserAllTodos } = require("../../mysql/todoQueries");
+const { getDateTimeStamp } = require("../utils");
 
-//Set number of Todos
-router.get("/todoData", (req, res) => {
-  const { count = todoData.length, manager } = req.query; //deconstruct and set default count of full set of data
-
-  //convert URL count to number
-  let countAsNumber = Number(count);
-
-  //convert NaN to 1
-  if (Number.isNaN(countAsNumber) || countAsNumber < 1) {
-    res.send("Invalid count selected");
-    return; //ends function
-  }
-
-  //   let copy = { ...todoData }; this made a shallow copy and did not copy the children, this was linked to original!!!!
-  let todos = [...todoData];
-
-  if (manager) {
-    todos = todos.filter((todo) => {
-      return todo.manager !== undefined;
-    }); //filter out undefined for manager cat
-    todos = todos.filter((todo) => {
-      return todo.manager.toUpperCase().includes(manager.toUpperCase());
-    }); //filter out correct manager
-  }
-
-  //Make sure count is not larger than data set after filter
-  todos.length = countAsNumber > todos.length ? todos.length : countAsNumber;
-
+//Get User Todos - currently visible
+router.get("/todoData", checkToken, async (req, res) => {
+  const idObject = await asyncMySQL(getUserIDFromToken(req.headers.token));
+  const id = idObject[0].user_id;
+  const timeDateStamp = getDateTimeStamp();
+  const todos = await asyncMySQL(getUserAllTodos(id, timeDateStamp));
   res.send(todos);
 });
 
 //random Todo
-router.get("/randomTodoData", (req, res) => {
-  const randomNum = Math.floor(Math.floor(Math.random() * todoData.length));
-  res.send(todoData[randomNum]);
+router.get("/randomTodoData", checkToken, async (req, res) => {
+  const idObject = await asyncMySQL(getUserIDFromToken(req.headers.token));
+  const id = idObject[0].user_id;
+  const timeDateStamp = getDateTimeStamp();
+  const todos = await asyncMySQL(getUserAllTodos(id, timeDateStamp));
+
+  const randomNum = Math.floor(Math.floor(Math.random() * todos.length));
+
+  res.send(todos[randomNum]);
 });
 
 module.exports = router;
