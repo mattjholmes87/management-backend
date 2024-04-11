@@ -11,6 +11,8 @@ server.use(express.static("public")); //allows access to items in public file wi
 //Importing my router
 server.use("/todos/get", require("./routes/todos/get"));
 server.use("/todos/post", require("./routes/todos/post"));
+server.use("/todos/delete", require("./routes/todos/delete"));
+server.use("/todos/patch", require("./routes/todos/patch"));
 server.use("/user/post", require("./routes/user/post"));
 server.use("/user/delete", require("./routes/user/delete"));
 server.use("/user/get", require("./routes/user/get"));

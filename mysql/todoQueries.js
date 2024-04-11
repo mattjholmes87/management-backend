@@ -15,8 +15,14 @@ function addTodo(
 
 function getTodoByID(id) {}
 
-function deleteTodoByID() {
-  return `;`;
+function getTodoByName(user_id, name) {
+  return `SELECT * FROM todos
+  WHERE todos.name LIKE "${name}" AND todos.complete_by = "${user_id}";`;
+}
+
+function deleteTodoByID(user_id, todo_id) {
+  return `DELETE todos FROM todos
+    WHERE todos.todo_id LIKE "${todo_id}" AND todos.complete_by = "${user_id}";`;
 }
 
 function updateTodoByID() {
@@ -47,6 +53,7 @@ function getManagerAllSetTodos() {
 module.exports = {
   addTodo,
   getTodoByID,
+  getTodoByName,
   deleteTodoByID,
   updateTodoByID,
   getUserAllTodos,
