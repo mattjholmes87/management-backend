@@ -7,7 +7,7 @@ const asyncMySQL = require("../../mysql/driver");
 const { updateAUser } = require("../../mysql/userQueries");
 
 //Update a user
-router.patch("/", checkToken, (req, res) => {
+router.patch("/", checkToken, async (req, res) => {
   if (
     !(
       req.body.email ||
@@ -25,28 +25,34 @@ router.patch("/", checkToken, (req, res) => {
 
   //Rehash password
   if (req.body.password) {
-    asyncMySQL(
+    await asyncMySQL(
       updateAUser("password", sha256(req.body.password + kw), req.headers.token)
     );
   }
 
   if (req.body.email) {
-    asyncMySQL(updateAUser("email", req.body.email, req.headers.token));
+    await asyncMySQL(updateAUser("email", req.body.email, req.headers.token));
   }
   if (req.body.firstname) {
-    asyncMySQL(updateAUser("firstname", req.body.firstname, req.headers.token));
+    await asyncMySQL(
+      updateAUser("firstname", req.body.firstname, req.headers.token)
+    );
   }
   if (req.body.surname) {
-    asyncMySQL(updateAUser("surname", req.body.surname, req.headers.token));
+    await asyncMySQL(
+      updateAUser("surname", req.body.surname, req.headers.token)
+    );
   }
   if (req.body.staffcode) {
-    asyncMySQL(updateAUser("staffcode", req.body.staffcode, req.headers.token));
+    await asyncMySQL(
+      updateAUser("staffcode", req.body.staffcode, req.headers.token)
+    );
   }
   if (req.body.school) {
-    asyncMySQL(updateAUser("school", req.body.school, req.headers.token));
+    await asyncMySQL(updateAUser("school", req.body.school, req.headers.token));
   }
   if (req.body.user_level) {
-    asyncMySQL(
+    await asyncMySQL(
       updateAUser("user_level", req.body.user_level, req.headers.token)
     );
   }

@@ -8,16 +8,16 @@ function addTodo(
   category
 ) {
   return `INSERT INTO todos
-                (name, body, priority, complete_by, managed_by, created_by, category)
+                (name, body, priority, completed, complete_by, managed_by, created_by, category)
                     VALUES
-                        ("${name}", "${body}", "${priority}", "${complete_by}", "${managed_by}", "${created_by}", "${category}");`;
+                        ("${name}", "${body}", "${priority}", "${completed}", "${complete_by}", "${managed_by}", "${created_by}", "${category}");`;
 }
 
 function getTodoByID(id) {}
 
 function getTodoByName(user_id, name) {
   return `SELECT * FROM todos
-  WHERE todos.name LIKE "${name}" AND todos.complete_by = "${user_id}";`;
+                WHERE todos.name LIKE "${name}" AND todos.complete_by = "${user_id}";`;
 }
 
 function deleteTodoByID(user_id, todo_id) {
@@ -25,13 +25,29 @@ function deleteTodoByID(user_id, todo_id) {
     WHERE todos.todo_id LIKE "${todo_id}" AND todos.complete_by = "${user_id}";`;
 }
 
-function updateTodoByID() {
-  return `;`;
+function updateTodoByID(todo_id, user_id, key, value) {
+  return `UPDATE todos 
+                        SET ${key} = "${value}"
+                                 WHERE todos.todo_id LIKE "${todo_id}" AND todos.created_by = "${user_id}";`;
+}
+
+function updateTodoCompletedDate(id) {
+  return `UPDATE todos
+                SET completed_on = NULL WHERE (created_by = "${id}" AND completed = '0');`;
+}
+
+function updateTodoSignedOffDate(id) {
+  return `UPDATE todos
+                  SET signed_off_on = NULL WHERE (created_by = "${id}" AND signed_off = '0');`;
 }
 
 function getUserAllTodos(id, dateTimeStamp) {
   return `SELECT * FROM todos
-    WHERE todos.complete_by LIKE "${id}" AND todos.display_on < "${dateTimeStamp}";`;
+                WHERE todos.complete_by LIKE "${id}" AND todos.display_on < "${dateTimeStamp}";`;
+}
+
+function todoBooleanToggle(todo_id, key) {
+  return `UPDATE todos SET ${key} = NOT ${key} WHERE todo_id = "${todo_id}" AND ${key} != "0";`;
 }
 
 function getUserNumberOfTodos() {
@@ -56,9 +72,12 @@ module.exports = {
   getTodoByName,
   deleteTodoByID,
   updateTodoByID,
+  updateTodoCompletedDate,
+  updateTodoSignedOffDate,
   getUserAllTodos,
   getUserPriorityUserTodos,
   getUserCategoryTodos,
   getUserNumberOfTodos,
   getManagerAllSetTodos,
+  todoBooleanToggle,
 };

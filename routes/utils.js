@@ -44,8 +44,23 @@ function getDateTimeStamp() {
   return dateTimeStamp;
 }
 
+function getDateStamp() {
+  let date = new Date();
+  const mseconds = date.getMilliseconds();
+  const seconds = date.getSeconds();
+  const minutes = date.getMinutes();
+  const hours = date.getHours();
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+
+  let dateStamp = year + "-" + (month + 1) + "-" + day;
+  return dateStamp;
+}
+
 module.exports = {
   randomIntFromInterval,
   getRid,
   getDateTimeStamp,
+  getDateStamp,
 };

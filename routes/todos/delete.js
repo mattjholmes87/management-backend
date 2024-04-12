@@ -3,12 +3,10 @@ const router = express.Router();
 const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
 const { deleteTodoByID } = require("../../mysql/todoQueries");
-const { getUserIDFromToken } = require("../../mysql/userQueries");
 
 //Delete a User Todos
-router.delete("/todoData", checkToken, async (req, res) => {
-  const idObject = await asyncMySQL(getUserIDFromToken(req.headers.token));
-  const id = idObject[0].user_id;
+router.delete("/", checkToken, async (req, res) => {
+  const id = req.authenticatedUserID;
 
   const result = await asyncMySQL(deleteTodoByID(id, req.headers.todo_id));
 

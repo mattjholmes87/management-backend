@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { checkToken } = require("../../middleware/test");
-const { getUserIDFromToken } = require("../../mysql/userQueries");
 const asyncMySQL = require("../../mysql/driver");
 const { getUserAllTodos } = require("../../mysql/todoQueries");
 const { getDateTimeStamp } = require("../utils");
 
-//Get User Todos - currently visible
+//Get User Todos - currently visible by date
 router.get("/todoData", checkToken, async (req, res) => {
-  const idObject = await asyncMySQL(getUserIDFromToken(req.headers.token));
-  const id = idObject[0].user_id;
+  const id = req.authenticatedUserID;
   const timeDateStamp = getDateTimeStamp();
   const todos = await asyncMySQL(getUserAllTodos(id, timeDateStamp));
   res.send(todos);
@@ -17,8 +15,7 @@ router.get("/todoData", checkToken, async (req, res) => {
 
 //random Todo
 router.get("/randomTodoData", checkToken, async (req, res) => {
-  const idObject = await asyncMySQL(getUserIDFromToken(req.headers.token));
-  const id = idObject[0].user_id;
+  const id = req.authenticatedUserID;
   const timeDateStamp = getDateTimeStamp();
   const todos = await asyncMySQL(getUserAllTodos(id, timeDateStamp));
 
