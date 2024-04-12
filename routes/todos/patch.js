@@ -2,12 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
-const {
-  updateTodoByID,
-  updateTodoCompletedDate,
-  todoBooleanToggle,
-  updateTodoSignedOffDate,
-} = require("../../mysql/todoQueries");
+const { updateTodoByID, updateTodoDate } = require("../../mysql/todoQueries");
 const { getDateTimeStamp } = require("../utils");
 
 //Update a User Todos
@@ -46,37 +41,19 @@ router.patch("/", checkToken, async (req, res) => {
     return;
   }
 
-  if (name) {
-    await asyncMySQL(updateTodoByID(todo_id, id, "name", name));
-  }
-  if (body) {
-    await asyncMySQL(updateTodoByID(todo_id, id, "body", body));
-  }
-  if (due_date) {
-    await asyncMySQL(updateTodoByID(todo_id, id, "due_date", due_date));
-  }
-  if (display_on) {
-    await asyncMySQL(updateTodoByID(todo_id, id, "display_on", display_on));
-  }
-  if (category) {
-    await asyncMySQL(updateTodoByID(todo_id, id, "category", category));
-  }
-  if ("priority" in req.body) {
-    await asyncMySQL(updateTodoByID(todo_id, id, "priority", priority));
-  }
-  if ("completed" in req.body) {
-    await asyncMySQL(updateTodoByID(todo_id, id, "completed", completed));
-    await asyncMySQL(
-      updateTodoByID(todo_id, id, "completed_on", getDateTimeStamp())
-    );
-    await asyncMySQL(updateTodoCompletedDate(id));
-  }
-  if ("signed_off" in req.body) {
-    await asyncMySQL(updateTodoByID(todo_id, id, "signed_off", signed_off));
-    await asyncMySQL(
-      updateTodoByID(todo_id, id, "signed_off_on", getDateTimeStamp())
-    );
-    await asyncMySQL(updateTodoSignedOffDate(id));
+  for (const [key, value] of Object.entries(req.body)) {
+    if (key === "completed" || key === "signed_off") {
+      const result = await asyncMySQL(updateTodoByID(todo_id, id, key, value));
+      console.log(result);
+      await asyncMySQL(
+        updateTodoByID(todo_id, id, `${key}_on`, getDateTimeStamp())
+      );
+      await asyncMySQL(updateTodoDate(id, key));
+    } else if (key === "priority") {
+      await asyncMySQL(updateTodoByID(todo_id, id, key, value));
+    } else {
+      await asyncMySQL(updateTodoByID(todo_id, id, key, value));
+    }
   }
 
   res.send({ status: 1, reason: "Todo updated" });

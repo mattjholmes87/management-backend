@@ -31,14 +31,9 @@ function updateTodoByID(todo_id, user_id, key, value) {
                                  WHERE todos.todo_id LIKE "${todo_id}" AND todos.created_by = "${user_id}";`;
 }
 
-function updateTodoCompletedDate(id) {
+function updateTodoDate(id, key) {
   return `UPDATE todos
-                SET completed_on = NULL WHERE (created_by = "${id}" AND completed = '0');`;
-}
-
-function updateTodoSignedOffDate(id) {
-  return `UPDATE todos
-                  SET signed_off_on = NULL WHERE (created_by = "${id}" AND signed_off = '0');`;
+                  SET ${key}_on = NULL WHERE (created_by = "${id}" AND ${key} = '0');`;
 }
 
 function getUserAllTodos(id, dateTimeStamp) {
@@ -72,8 +67,7 @@ module.exports = {
   getTodoByName,
   deleteTodoByID,
   updateTodoByID,
-  updateTodoCompletedDate,
-  updateTodoSignedOffDate,
+  updateTodoDate,
   getUserAllTodos,
   getUserPriorityUserTodos,
   getUserCategoryTodos,
