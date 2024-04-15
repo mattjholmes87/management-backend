@@ -14,7 +14,7 @@ router.post("/", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
 
   const { title, agenda, date_of_meeting, participants } = req.body;
-  console.log(participants);
+
   try {
     await asyncMySQL(createAMeeting(id, title, agenda, date_of_meeting));
     const meeting_id = await asyncMySQL(findMeetingID(id, title));
