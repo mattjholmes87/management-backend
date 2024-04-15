@@ -42,17 +42,20 @@ function updateAUser(key, value, token) {
                     WHERE tokens.token LIKE "${token}";`;
 }
 
-function updateTodoCompletedDate(id) {
-  return `SELECT todos FROM todos
-            WHERE todos.created_by LIKE "${id}"
-              UPDATE todos SET completed_on = NULL WHERE completed = '0';
-                        UPDATE todos SET completed_on = NULL WHERE completed_on = '0000-00-00 00:00:00';`;
-}
-
 function getUserIDFromToken(token) {
   return `SELECT users.user_id FROM users
                     JOIN tokens ON users.user_id = tokens.user_id
                         WHERE tokens.token LIKE "${token}";`;
+}
+
+function getUserStaffCodeFromID(id) {
+  return `SELECT staffcode FROM users
+                  WHERE users.user_id LIKE "${id}";`;
+}
+
+function getUserIDFromStaffCode(staffcode) {
+  return `SELECT user_id FROM users
+                  WHERE users.staffcode LIKE "${staffcode}";`;
 }
 
 function getUserDetailsFromToken(token) {
@@ -76,9 +79,10 @@ module.exports = {
   deleteAToken,
   deleteAUser,
   updateAUser,
-  updateTodoCompletedDate,
   getUserIDFromToken,
   getUserDetailsFromToken,
+  getUserStaffCodeFromID,
+  getUserIDFromStaffCode,
   getAllUsers,
   deleteAllTokens,
   getUserManager,

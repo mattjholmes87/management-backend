@@ -41,7 +41,10 @@ router.post("/new", async (req, res) => {
     res.send({ status: 1, reason: "New user added", token: token });
   } catch (e) {
     console.log(e);
-    res.send({ status: 0, reason: "Unable to add user" });
+    res.send({
+      status: 0,
+      reason: `Unable to add user due to "${e.sqlMessage}"`,
+    });
   }
 });
 

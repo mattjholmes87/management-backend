@@ -21,19 +21,27 @@ router.post("/postTodo", checkToken, async (req, res) => {
     category = 1,
   } = req.body;
 
-  await asyncMySQL(
-    addTodo(
-      name,
-      body,
-      priority,
-      completed,
-      complete_by,
-      manager[0].line_manager,
-      id,
-      category
-    )
-  );
-  res.send({ status: 1, reason: "todo added" });
+  try {
+    await asyncMySQL(
+      addTodo(
+        name,
+        body,
+        priority,
+        completed,
+        complete_by,
+        manager[0].line_manager,
+        id,
+        category
+      )
+    );
+    res.send({ status: 1, reason: "todo added" });
+  } catch (e) {
+    console.log(e);
+    res.send({
+      status: 0,
+      reason: `Unable to add todo due to "${e.sqlMessage}"`,
+    });
+  }
 });
 
 module.exports = router;

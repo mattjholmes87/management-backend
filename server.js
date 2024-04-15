@@ -18,6 +18,10 @@ server.use("/user/delete", require("./routes/user/delete"));
 server.use("/user/get", require("./routes/user/get"));
 server.use("/user/patch", require("./routes/user/patch"));
 server.use("/user/login", require("./routes/user/login"));
+server.use("/meetings/get", require("./routes/meetings/get"));
+server.use("/meetings/post", require("./routes/meetings/post"));
+server.use("/meetings/delete", require("./routes/meetings/delete"));
+server.use("/meetings/patch", require("./routes/meetings/patch"));
 
 //logging middleware
 server.use(logging);
