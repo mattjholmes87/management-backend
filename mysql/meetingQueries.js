@@ -23,8 +23,9 @@ function addParticipants(id, meeting_id, staffcode) {
                               ("${meeting_id}", "${id}", "${staffcode}");`;
 }
 
-function deleteAMeeting() {
-  return `;`;
+function deleteAMeeting(meeting_id, user_id) {
+  return `DELETE meetings FROM meetings
+                WHERE meetings.meeting_id LIKE "${meeting_id}" AND meetings.owner = "${user_id}";`;
 }
 
 function updateAMeeting() {
