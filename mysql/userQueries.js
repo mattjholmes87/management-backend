@@ -53,6 +53,11 @@ function getUserStaffCodeFromID(id) {
                   WHERE users.user_id LIKE "${id}";`;
 }
 
+function getUserLevelFromID(id) {
+  return `SELECT user_level FROM users
+              WHERE users.user_id LIKE "${id}";`;
+}
+
 function getUserIDFromStaffCode(staffcode) {
   return `SELECT user_id FROM users
                   WHERE users.staffcode LIKE "${staffcode}";`;
@@ -73,6 +78,11 @@ function getUserManager(id) {
                         WHERE users.user_id LIKE "${id}";`;
 }
 
+function getUserGroups(id) {
+  return `SELECT * FROM groups
+                        WHERE groups.user_id LIKE "${id}";`;
+}
+
 module.exports = {
   addAUser,
   addAToken,
@@ -82,8 +92,10 @@ module.exports = {
   getUserIDFromToken,
   getUserDetailsFromToken,
   getUserStaffCodeFromID,
+  getUserLevelFromID,
   getUserIDFromStaffCode,
   getAllUsers,
   deleteAllTokens,
   getUserManager,
+  getUserGroups,
 };

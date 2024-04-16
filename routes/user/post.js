@@ -5,6 +5,7 @@ const { getRid } = require("../utils");
 const { kw } = require("../../kw");
 const asyncMySQL = require("../../mysql/driver");
 const { addAUser, addAToken } = require("../../mysql/userQueries");
+const { checkToken, checkUserLevel } = require("../../middleware/test");
 
 //Add a user
 router.post("/new", async (req, res) => {
@@ -46,6 +47,15 @@ router.post("/new", async (req, res) => {
       reason: `Unable to add user due to "${e.sqlMessage}"`,
     });
   }
+});
+
+//Add user to group
+router.post("/groups", checkToken, checkUserLevel, async (req, res) => {
+  const id = req.authenticatedUserID;
+  const level = req.authenticatedUserLevel;
+  console.log(id, level);
+  // const results = await asyncMySQL(getUserGroups(id));
+  res.send("test");
 });
 
 module.exports = router;

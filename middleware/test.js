@@ -1,5 +1,8 @@
 const asyncMySQL = require("../mysql/driver");
-const { getUserIDFromToken } = require("../mysql/userQueries");
+const {
+  getUserIDFromToken,
+  getUserLevelFromID,
+} = require("../mysql/userQueries");
 
 //logging middleware
 function logging(req, res, next) {
@@ -32,4 +35,17 @@ async function checkToken(req, res, next) {
   res.send({ status: 0, reason: "Bad Token" });
 }
 
-module.exports = { logging, userAgent, checkToken };
+async function checkUserLevel(req, res, next) {
+  const results = await asyncMySQL(getUserIDFromToken(req.headers.token));
+
+  if (results.length) {
+    authenticatedUserID = results[0].user_id;
+    const resultTwo = await asyncMySQL(getUserLevelFromID(authenticatedUserID));
+    req.authenticatedUserLevel = resultTwo[0].user_level;
+    next();
+    return;
+  }
+  res.send({ status: 0, reason: "Bad Token for User Level" });
+}
+
+module.exports = { logging, userAgent, checkToken, checkUserLevel };
