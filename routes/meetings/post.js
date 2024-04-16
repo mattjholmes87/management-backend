@@ -35,7 +35,6 @@ router.post("/", checkToken, async (req, res) => {
 
     res.send({ status: 1, reason: "meeting added" });
   } catch (e) {
-    console.log(e);
     res.send({
       status: 0,
       reason: `Unable to add meeting due to "${e.sqlMessage}"`,

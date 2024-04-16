@@ -50,9 +50,11 @@ router.patch("/", checkToken, async (req, res) => {
         try {
           await asyncMySQL(addParticipants(p_id, meeting_id, staffcode));
         } catch (e) {
-          console.log(
-            `Unable to update meeting participants due to "${e.sqlMessage}"`
-          );
+          res.send({
+            status: 0,
+            reason: `Unable to add meeting due to "${e.sqlMessage}"`,
+          });
+          return;
         }
       }
     } else {
