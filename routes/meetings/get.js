@@ -13,6 +13,6 @@ router.get("/", checkToken, async (req, res) => {
   res.send(meetings);
 });
 
-//get meeting by date
+//get meeting by date - TODO
 
 module.exports = router;

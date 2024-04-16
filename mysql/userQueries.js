@@ -2,14 +2,14 @@ function addAUser(email, password, firstname, surname, staffcode, school_id) {
   return `INSERT INTO users
                         (users.email, users.password, users.firstname, users.surname, users.staffcode, users.school_id)
                                 VALUES 
-                                        ("${email}", "${password}", "${firstname}", "${surname}", "${staffcode}", "${school_id}");`;
+                                        ("${email}", "${password}", "${firstname}", "${surname}", "${staffcode}", ${school_id});`;
 }
 
 function addAToken(id, token) {
   return `INSERT INTO tokens
                 (user_id, token)
                     VALUES
-                        ("${id}", "${token}");`;
+                        (${id}, "${token}");`;
 }
 
 function deleteAToken(token) {
@@ -19,7 +19,7 @@ function deleteAToken(token) {
 
 function deleteAllTokens(id) {
   return `DELETE tokens FROM tokens
-            WHERE tokens.user_id LIKE "${id}";`;
+            WHERE tokens.user_id LIKE ${id};`;
 }
 
 function deleteAUser(user_id) {
@@ -47,17 +47,17 @@ function getUserIDFromToken(token) {
 
 function getUserStaffCodeFromID(id) {
   return `SELECT staffcode FROM users
-                  WHERE users.user_id LIKE "${id}";`;
+                  WHERE users.user_id LIKE ${id};`;
 }
 
 function getUserSchoolCodeFromID(id) {
   return `SELECT school_id FROM users
-                  WHERE users.user_id LIKE "${id}";`;
+                  WHERE users.user_id LIKE ${id};`;
 }
 
 function getUserLevelFromID(id) {
   return `SELECT user_level FROM users
-              WHERE users.user_id LIKE "${id}";`;
+              WHERE users.user_id LIKE ${id};`;
 }
 
 function getUserIDFromStaffCode(staffcode) {
@@ -82,7 +82,7 @@ function getUserManager(id) {
 
 function getUserGroups(id) {
   return `SELECT * FROM groups
-                        WHERE groups.user_id LIKE "${id}";`;
+                        WHERE groups.user_id LIKE ${id};`;
 }
 
 function getGroupSchool(group_id) {
@@ -94,14 +94,14 @@ function addUserToGroups(user_id, group_id, school_id) {
   return `INSERT INTO groups
               (user_id, group_id, school_id)
                     VALUES 
-                        ("${user_id}", "${group_id}", "${school_id}");`;
+                        (${user_id}, ${group_id}, ${school_id});`;
 }
 
 function addUserGroup(group_name, school_id) {
   return `INSERT INTO assign_groups
               (group_name, school_id)
                     VALUES 
-                        ("${group_name}", "${school_id}");`;
+                        ("${group_name}", ${school_id});`;
 }
 
 function updateUserGroupNames(user_id) {

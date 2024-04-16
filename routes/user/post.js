@@ -88,7 +88,7 @@ router.post(
   }
 );
 
-//Add a new group - TODO
+//Add a new group
 router.post("/groups/new", checkToken, checkUserLevel, async (req, res) => {
   const id = req.authenticatedUserID;
   const level = req.authenticatedUserLevel;
