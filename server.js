@@ -1,5 +1,11 @@
 const express = require("express");
-const { logging, userAgent } = require("./middleware/test");
+const {
+  logging,
+  userAgent,
+  checkToken,
+  checkUserLevel,
+  checkGroupSchool,
+} = require("./middleware/test");
 const server = express();
 const cors = require("cors");
 
@@ -24,7 +30,7 @@ server.use("/meetings/delete", require("./routes/meetings/delete"));
 server.use("/meetings/patch", require("./routes/meetings/patch"));
 
 //logging middleware
-server.use(logging);
+server.use(logging, checkToken, checkUserLevel, checkGroupSchool);
 // hacker prevent middles ware - remove for testing
 // server.use(userAgent);
 

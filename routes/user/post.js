@@ -4,16 +4,33 @@ const sha256 = require("sha256");
 const { getRid } = require("../utils");
 const { kw } = require("../../kw");
 const asyncMySQL = require("../../mysql/driver");
-const { addAUser, addAToken } = require("../../mysql/userQueries");
-const { checkToken, checkUserLevel } = require("../../middleware/test");
+const {
+  addAUser,
+  addAToken,
+  addUserToGroups,
+  addUserGroup,
+  updateUserGroupNames,
+  updateUserSchoolNames,
+} = require("../../mysql/userQueries");
+const {
+  checkToken,
+  checkUserLevel,
+  checkGroupSchool,
+} = require("../../middleware/test");
 
 //Add a user
 router.post("/new", async (req, res) => {
-  let { email, password, firstname, surname, staffcode, user_level, school } =
-    req.body;
+  let { email, password, firstname, surname, staffcode, school_id } = req.body;
 
   //Check they exist
-  if (!email || !password || !staffcode || !firstname || !surname || !school) {
+  if (
+    !email ||
+    !password ||
+    !staffcode ||
+    !firstname ||
+    !surname ||
+    !school_id
+  ) {
     res.send({ status: 0, reason: "Missing data to register" });
   }
 
@@ -26,18 +43,11 @@ router.post("/new", async (req, res) => {
   //talk to DB
   try {
     const result = await asyncMySQL(
-      addAUser(
-        email,
-        password,
-        firstname,
-        surname,
-        staffcode,
-        school,
-        user_level
-      )
+      addAUser(email, password, firstname, surname, staffcode, school_id)
     );
 
     await asyncMySQL(addAToken(result.insertId, token));
+    await asyncMySQL(updateUserSchoolNames(result.insertId));
 
     res.send({ status: 1, reason: "New user added", token: token });
   } catch (e) {
@@ -50,12 +60,55 @@ router.post("/new", async (req, res) => {
 });
 
 //Add user to group
-router.post("/groups", checkToken, checkUserLevel, async (req, res) => {
+router.post(
+  "/groups",
+  checkToken,
+  checkUserLevel,
+  checkGroupSchool,
+  async (req, res) => {
+    const level = req.authenticatedUserLevel;
+    const schoolid = req.inputUserSchoolID;
+    const { user_id, group_id } = req.body;
+
+    if (level >= 4) {
+      res.send({ status: 0, reason: "User level too low" });
+      return;
+    }
+    try {
+      await asyncMySQL(addUserToGroups(user_id, group_id, schoolid));
+      await asyncMySQL(updateUserGroupNames(user_id));
+    } catch (e) {
+      res.send({
+        status: 0,
+        reason: `Unable to add user to group due to "${e.sqlMessage}"`,
+      });
+      return;
+    }
+    res.send({ status: 1, reason: "User added to group" });
+  }
+);
+
+//Add a new group - TODO
+router.post("/groups/new", checkToken, checkUserLevel, async (req, res) => {
   const id = req.authenticatedUserID;
   const level = req.authenticatedUserLevel;
-  console.log(id, level);
-  // const results = await asyncMySQL(getUserGroups(id));
-  res.send("test");
+  const schoolid = req.authenticatedUserSchoolID;
+  const { group_name } = req.body;
+
+  if (level >= 3) {
+    res.send({ status: 0, reason: "User level too low" });
+    return;
+  }
+  try {
+    await asyncMySQL(addUserGroup(group_name, schoolid));
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to add group due to "${e.sqlMessage}"`,
+    });
+    return;
+  }
+  res.send({ status: 1, reason: "New Group Added" });
 });
 
 module.exports = router;

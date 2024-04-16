@@ -2,6 +2,8 @@ const asyncMySQL = require("../mysql/driver");
 const {
   getUserIDFromToken,
   getUserLevelFromID,
+  getGroupSchool,
+  getUserSchoolCodeFromID,
 } = require("../mysql/userQueries");
 
 //logging middleware
@@ -28,6 +30,7 @@ async function checkToken(req, res, next) {
 
   if (results.length) {
     req.authenticatedUserID = results[0].user_id;
+    req.authenticatedUserSchoolID = results[0].school_id;
     next();
     return;
   }
@@ -36,16 +39,33 @@ async function checkToken(req, res, next) {
 }
 
 async function checkUserLevel(req, res, next) {
-  const results = await asyncMySQL(getUserIDFromToken(req.headers.token));
+  const results = await asyncMySQL(getUserLevelFromID(req.authenticatedUserID));
 
   if (results.length) {
-    authenticatedUserID = results[0].user_id;
-    const resultTwo = await asyncMySQL(getUserLevelFromID(authenticatedUserID));
-    req.authenticatedUserLevel = resultTwo[0].user_level;
+    req.authenticatedUserLevel = results[0].user_level;
     next();
     return;
   }
   res.send({ status: 0, reason: "Bad Token for User Level" });
 }
 
-module.exports = { logging, userAgent, checkToken, checkUserLevel };
+async function checkGroupSchool(req, res, next) {
+  const { user_id, group_id } = req.body;
+  const result1 = await asyncMySQL(getGroupSchool(group_id));
+  const result2 = await asyncMySQL(getUserSchoolCodeFromID(user_id));
+  req.inputUserSchoolID = result2[0].school_id;
+
+  if (result1[0].school_id === result2[0].school_id) {
+    next();
+    return;
+  }
+  res.send({ status: 0, reason: "Group does not belong to your school" });
+}
+
+module.exports = {
+  logging,
+  userAgent,
+  checkToken,
+  checkUserLevel,
+  checkGroupSchool,
+};
