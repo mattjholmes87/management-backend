@@ -1,16 +1,8 @@
-function addTodo(
-  name,
-  body,
-  priority,
-  complete_by,
-  managed_by,
-  created_by,
-  category
-) {
+function addTodo() {
   return `INSERT INTO todos
-                (name, body, priority, completed, complete_by, managed_by, created_by, category)
+                (name, body, priority, complete_by, managed_by, created_by, category)
                     VALUES
-                        ("${name}", "${body}", "${priority}", "${completed}", "${complete_by}", "${managed_by}", "${created_by}", "${category}");`;
+                        (?, ?, ?, ?, ?, ?, ?);`;
 }
 
 function getTodoByID(id) {}
@@ -20,25 +12,25 @@ function getTodoByName(user_id, name) {
                 WHERE todos.name LIKE "${name}" AND todos.complete_by = ${user_id};`;
 }
 
-function deleteTodoByID(user_id, todo_id) {
+function deleteTodoByID() {
   return `DELETE todos FROM todos
-    WHERE todos.todo_id LIKE ${todo_id} AND todos.complete_by = ${user_id};`;
+    WHERE todos.todo_id LIKE ? AND todos.complete_by = ?;`;
 }
 
-function updateTodoByID(todo_id, user_id, key, value) {
+function updateTodoByID() {
   return `UPDATE todos 
-                        SET ${key} = "${value}"
-                                 WHERE todos.todo_id LIKE ${todo_id} AND todos.created_by = ${user_id};`;
+                        SET ? = ?
+                                 WHERE todos.todo_id LIKE ? AND todos.created_by = ?;`;
 }
 
-function updateTodoDate(id, key) {
+function updateTodoDate() {
   return `UPDATE todos
-                  SET ${key}_on = NULL WHERE (created_by = ${id} AND ${key} = '0');`;
+                  SET ?_on = NULL WHERE (created_by = ? AND ? = '0');`;
 }
 
-function getUserAllTodos(id, dateTimeStamp) {
+function getUserAllTodos() {
   return `SELECT * FROM todos
-                WHERE todos.complete_by LIKE ${id} AND todos.display_on < "${dateTimeStamp}";`;
+                WHERE todos.complete_by LIKE ? AND todos.display_on < ?;`;
 }
 
 function todoBooleanToggle(todo_id, key) {

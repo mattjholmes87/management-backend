@@ -9,7 +9,7 @@ const { getDateTimeStamp } = require("../utils");
 router.get("/todoData", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
   const timeDateStamp = getDateTimeStamp();
-  const todos = await asyncMySQL(getUserAllTodos(id, timeDateStamp));
+  const todos = await asyncMySQL(getUserAllTodos(), [id, timeDateStamp]);
   res.send(todos);
 });
 
@@ -17,7 +17,7 @@ router.get("/todoData", checkToken, async (req, res) => {
 router.get("/randomTodoData", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
   const timeDateStamp = getDateTimeStamp();
-  const todos = await asyncMySQL(getUserAllTodos(id, timeDateStamp));
+  const todos = await asyncMySQL(getUserAllTodos(), [id, timeDateStamp]);
 
   const randomNum = Math.floor(Math.floor(Math.random() * todos.length));
 

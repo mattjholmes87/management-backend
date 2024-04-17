@@ -10,30 +10,31 @@ const { getUserManager } = require("../../mysql/userQueries");
 //Post todo
 router.post("/postTodo", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
-  const manager = await asyncMySQL(getUserManager(id));
+  const result = await asyncMySQL(getUserManager(), [id]);
 
-  const {
-    name,
-    body,
-    priority = 0,
-    completed = 0,
-    complete_by = id,
-    category = 1,
-  } = req.body;
+  if (result.length === 0) {
+    manager = null;
+  } else {
+    manager = result[0].line_manager;
+  }
+  console.log(id, result, manager);
+  const { name, body, priority = 0, complete_by = id, category = 1 } = req.body;
+
+  if (!name || !body) {
+    res.send({ status: 0, reason: "Missing Title and/or Body of Todo" });
+    return;
+  }
 
   try {
-    await asyncMySQL(
-      addTodo(
-        name,
-        body,
-        priority,
-        completed,
-        complete_by,
-        manager[0].line_manager,
-        id,
-        category
-      )
-    );
+    await asyncMySQL(addTodo(), [
+      name,
+      body,
+      priority,
+      complete_by,
+      manager,
+      id,
+      category,
+    ]);
     res.send({ status: 1, reason: "todo added" });
   } catch (e) {
     console.log(e);

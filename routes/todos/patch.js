@@ -5,9 +5,9 @@ const asyncMySQL = require("../../mysql/driver");
 const { updateTodoByID, updateTodoDate } = require("../../mysql/todoQueries");
 const { getDateTimeStamp } = require("../utils");
 
-//Update a User Todos
+//Update a User Todos - NOT WORKING SAME STRING ERROR
 router.patch("/", checkToken, async (req, res) => {
-  const id = req.authenticatedUserID;
+  const user_id = req.authenticatedUserID;
 
   const {
     todo_id,
@@ -43,16 +43,18 @@ router.patch("/", checkToken, async (req, res) => {
 
   for (const [key, value] of Object.entries(req.body)) {
     if (key === "completed" || key === "signed_off") {
-      const result = await asyncMySQL(updateTodoByID(todo_id, id, key, value));
-      console.log(result);
-      await asyncMySQL(
-        updateTodoByID(todo_id, id, `${key}_on`, getDateTimeStamp())
-      );
-      await asyncMySQL(updateTodoDate(id, key));
+      await asyncMySQL(updateTodoByID(), [key, value, todo_id, user_id]);
+      await asyncMySQL(updateTodoByID(), [
+        `${key}_on`,
+        getDateTimeStamp(),
+        todo_id,
+        user_id,
+      ]);
+      await asyncMySQL(updateTodoDate(), [key, user_id, key]);
     } else if (key === "priority") {
-      await asyncMySQL(updateTodoByID(todo_id, id, key, value));
+      await asyncMySQL(updateTodoByID(), [key, value, todo_id, user_id]);
     } else {
-      await asyncMySQL(updateTodoByID(todo_id, id, key, value));
+      await asyncMySQL(updateTodoByID(), [key, value, todo_id, user_id]);
     }
   }
 

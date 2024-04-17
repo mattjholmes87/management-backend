@@ -76,9 +76,9 @@ function getAllUsers() {
   return `SELECT * FROM users;`;
 }
 
-function getUserManager(id) {
+function getUserManager() {
   return `SELECT users.line_manager FROM users
-                        WHERE users.user_id LIKE "${id}";`;
+                        WHERE users.user_id LIKE ?;`;
 }
 
 function getUserGroups() {

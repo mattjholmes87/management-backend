@@ -8,7 +8,7 @@ const { deleteTodoByID } = require("../../mysql/todoQueries");
 router.delete("/", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
 
-  const result = await asyncMySQL(deleteTodoByID(id, req.headers.todo_id));
+  const result = await asyncMySQL(deleteTodoByID(), [req.headers.todo_id, id]);
 
   res.send({ status: 1, reason: "todo deleted" });
 });
