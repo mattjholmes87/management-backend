@@ -41,7 +41,7 @@ function updateAUser() {
 }
 
 function getUserIDFromToken() {
-  return `SELECT users.user_id, users.school_id FROM users
+  return `SELECT users.user_id AS userID, users.school_id AS schoolID FROM users
                     JOIN tokens ON users.user_id = tokens.user_id
                         WHERE tokens.token LIKE ?;`;
 }
@@ -51,14 +51,14 @@ function getUserStaffCodeFromID() {
                   WHERE users.user_id LIKE ?;`;
 }
 
-function getUserSchoolCodeFromID(id) {
-  return `SELECT school_id FROM users
-                  WHERE users.user_id LIKE ${id};`;
+function getUserSchoolCodeFromID() {
+  return `SELECT school_id AS schoolID FROM users
+                  WHERE users.user_id LIKE ?;`;
 }
 
-function getUserLevelFromID(id) {
-  return `SELECT user_level FROM users
-              WHERE users.user_id LIKE ${id};`;
+function getUserLevelFromID() {
+  return `SELECT user_level AS userLevel FROM users
+              WHERE users.user_id LIKE ?;`;
 }
 
 function getUserIDFromStaffCode(staffcode) {
@@ -86,9 +86,9 @@ function getUserGroups() {
                         WHERE groups.user_id LIKE ?;`;
 }
 
-function getGroupSchool(group_id) {
-  return `SELECT assign_groups.school_id FROM assign_groups
-              WHERE assign_groups.group_id = ${group_id};`;
+function getGroupSchool() {
+  return `SELECT assign_groups.school_id AS schoolID FROM assign_groups
+              WHERE assign_groups.group_id = ?;`;
 }
 
 function addUserToGroups() {

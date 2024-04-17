@@ -72,16 +72,16 @@ router.post(
   checkGroupSchool,
   async (req, res) => {
     const level = req.authenticatedUserLevel;
-    const schoolid = req.inputUserSchoolID;
-    const { user_id, group_id } = req.body;
+    const schoolID = req.inputUserSchoolID;
+    const { userID, groupID } = req.body;
 
     if (level >= 4) {
       res.send({ status: 0, reason: "User level too low" });
       return;
     }
     try {
-      await asyncMySQL(addUserToGroups(), [user_id, group_id, schoolid]);
-      await asyncMySQL(updateUserGroupNames(), [user_id]);
+      await asyncMySQL(addUserToGroups(), [userID, groupID, schoolID]);
+      await asyncMySQL(updateUserGroupNames(), [userID]);
     } catch (e) {
       res.send({
         status: 0,

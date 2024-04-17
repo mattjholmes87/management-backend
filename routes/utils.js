@@ -58,9 +58,16 @@ function getDateStamp() {
   return dateStamp;
 }
 
+function camelCaseToSnakeCase(input) {
+  let splitInput = input.split(/(?=[A-Z])/);
+  let snakedInput = splitInput.join("_").toLowerCase();
+  return snakedInput;
+}
+
 module.exports = {
   randomIntFromInterval,
   getRid,
   getDateTimeStamp,
   getDateStamp,
+  camelCaseToSnakeCase,
 };

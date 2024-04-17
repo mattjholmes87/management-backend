@@ -12,7 +12,7 @@ function createAMeeting() {
 }
 
 function findMeetingID() {
-  return `SELECT meeting_id FROM meetings
+  return `SELECT meeting_id AS meetingID FROM meetings
             WHERE meetings.owner = ? AND meetings.title = ?;`;
 }
 
@@ -29,9 +29,9 @@ function deleteAMeeting() {
                         WHERE meetings.meeting_id LIKE ? AND meetings.owner = ?;`;
 }
 
-function updateMeetingByID() {
+function updateMeetingByID(key) {
   return `UPDATE meetings 
-                          SET ? = ?
+                          SET ${key} = ?
                                    WHERE meetings.meeting_id LIKE ? AND meetings.owner = ?;`;
 }
 

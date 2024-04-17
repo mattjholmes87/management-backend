@@ -29,8 +29,8 @@ async function checkToken(req, res, next) {
   const results = await asyncMySQL(getUserIDFromToken(), [req.headers.token]);
 
   if (results.length) {
-    req.authenticatedUserID = results[0].user_id;
-    req.authenticatedUserSchoolID = results[0].school_id;
+    req.authenticatedUserID = results[0].userID;
+    req.authenticatedUserSchoolID = results[0].schoolID;
     next();
     return;
   }
@@ -39,10 +39,12 @@ async function checkToken(req, res, next) {
 }
 
 async function checkUserLevel(req, res, next) {
-  const results = await asyncMySQL(getUserLevelFromID(req.authenticatedUserID));
+  const results = await asyncMySQL(getUserLevelFromID(), [
+    req.authenticatedUserID,
+  ]);
 
   if (results.length) {
-    req.authenticatedUserLevel = results[0].user_level;
+    req.authenticatedUserLevel = results[0].userLevel;
     next();
     return;
   }
@@ -50,12 +52,12 @@ async function checkUserLevel(req, res, next) {
 }
 
 async function checkGroupSchool(req, res, next) {
-  const { user_id, group_id } = req.body;
-  const result1 = await asyncMySQL(getGroupSchool(group_id));
-  const result2 = await asyncMySQL(getUserSchoolCodeFromID(user_id));
-  req.inputUserSchoolID = result2[0].school_id;
+  const { userID, groupID } = req.body;
+  const result1 = await asyncMySQL(getGroupSchool(), [groupID]);
+  const result2 = await asyncMySQL(getUserSchoolCodeFromID(userID));
+  req.inputUserSchoolID = result2[0].schoolID;
 
-  if (result1[0].school_id === result2[0].school_id) {
+  if (result1[0].schoolID === result2[0].schoolID) {
     next();
     return;
   }
