@@ -29,10 +29,10 @@ function deleteAMeeting() {
                         WHERE meetings.meeting_id LIKE ? AND meetings.owner = ?;`;
 }
 
-function updateMeetingByID(meeting_id, user_id, key, value) {
+function updateMeetingByID() {
   return `UPDATE meetings 
-                          SET ${key} = "${value}"
-                                   WHERE meetings.meeting_id LIKE ${meeting_id} AND meetings.owner = ${user_id};`;
+                          SET ? = ?
+                                   WHERE meetings.meeting_id LIKE ? AND meetings.owner = ?;`;
 }
 
 module.exports = {

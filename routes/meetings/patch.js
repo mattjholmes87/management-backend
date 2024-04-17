@@ -9,7 +9,7 @@ const {
   updateMeetingByID,
 } = require("../../mysql/meetingQueries");
 
-//Update a User meetings - where to put try catch for duplicate meetings?
+//Update a User meetings
 router.patch("/", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
 
@@ -42,13 +42,9 @@ router.patch("/", checkToken, async (req, res) => {
   for (const [key, value] of Object.entries(req.body)) {
     if (key === "participants") {
       for (let i = 0; i < participants.length; i++) {
-        let participant_array = await asyncMySQL(
-          getUserStaffCodeFromID(participants[i])
-        );
-        let staffcode = participant_array[0].staffcode;
         let p_id = participants[i];
         try {
-          await asyncMySQL(addParticipants(p_id, meeting_id, staffcode));
+          await asyncMySQL(addParticipants(), [meeting_id, p_id]);
         } catch (e) {
           res.send({
             status: 0,
@@ -58,7 +54,7 @@ router.patch("/", checkToken, async (req, res) => {
         }
       }
     } else {
-      await asyncMySQL(updateMeetingByID(meeting_id, id, key, value));
+      await asyncMySQL(updateMeetingByID(), [key, value, meeting_id, id]);
     }
   }
 

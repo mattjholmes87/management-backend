@@ -40,10 +40,10 @@ function updateAUser() {
                     WHERE tokens.token LIKE ?;`;
 }
 
-function getUserIDFromToken(token) {
+function getUserIDFromToken() {
   return `SELECT users.user_id, users.school_id FROM users
                     JOIN tokens ON users.user_id = tokens.user_id
-                        WHERE tokens.token LIKE "${token}";`;
+                        WHERE tokens.token LIKE ?;`;
 }
 
 function getUserStaffCodeFromID() {

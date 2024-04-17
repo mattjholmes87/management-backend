@@ -26,7 +26,7 @@ function userAgent(req, res, next) {
 //Auth Middleware
 
 async function checkToken(req, res, next) {
-  const results = await asyncMySQL(getUserIDFromToken(req.headers.token));
+  const results = await asyncMySQL(getUserIDFromToken(), [req.headers.token]);
 
   if (results.length) {
     req.authenticatedUserID = results[0].user_id;
