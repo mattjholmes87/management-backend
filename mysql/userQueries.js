@@ -46,9 +46,9 @@ function getUserIDFromToken(token) {
                         WHERE tokens.token LIKE "${token}";`;
 }
 
-function getUserStaffCodeFromID(id) {
+function getUserStaffCodeFromID() {
   return `SELECT staffcode FROM users
-                  WHERE users.user_id LIKE ${id};`;
+                  WHERE users.user_id LIKE ?;`;
 }
 
 function getUserSchoolCodeFromID(id) {

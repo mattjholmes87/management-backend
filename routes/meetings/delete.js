@@ -8,7 +8,7 @@ const { deleteAMeeting } = require("../../mysql/meetingQueries");
 router.delete("/", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
 
-  await asyncMySQL(deleteAMeeting(req.headers.meeting_id, id));
+  await asyncMySQL(deleteAMeeting(), [req.headers.meeting_id, id]);
 
   res.send({ status: 1, reason: "Meeting deleted" });
 });

@@ -16,8 +16,8 @@ router.post("/", checkToken, async (req, res) => {
   const { title, agenda, date_of_meeting, participants } = req.body;
 
   try {
-    await asyncMySQL(createAMeeting(id, title, agenda, date_of_meeting));
-    const meeting_id = await asyncMySQL(findMeetingID(id, title));
+    await asyncMySQL(createAMeeting(), [id, title, agenda, date_of_meeting]);
+    const meeting_id = await asyncMySQL(findMeetingID(), [id, title]);
     const m_id = meeting_id[0].meeting_id;
 
     if (!participants in req.body) {
@@ -25,12 +25,9 @@ router.post("/", checkToken, async (req, res) => {
     }
 
     for (let i = 0; i < participants.length; i++) {
-      let participant_array = await asyncMySQL(
-        getUserStaffCodeFromID(participants[i])
-      );
-      let staffcode = participant_array[0].staffcode;
       let p_id = participants[i];
-      asyncMySQL(addParticipants(p_id, m_id, staffcode));
+      console.log(m_id, p_id);
+      asyncMySQL(addParticipants(), [m_id, p_id]);
     }
 
     res.send({ status: 1, reason: "meeting added" });

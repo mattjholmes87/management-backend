@@ -8,7 +8,7 @@ const { getMeetingByID } = require("../../mysql/meetingQueries");
 router.get("/", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
 
-  const meetings = await asyncMySQL(getMeetingByID(id));
+  const meetings = await asyncMySQL(getMeetingByID(), [id]);
 
   res.send(meetings);
 });
