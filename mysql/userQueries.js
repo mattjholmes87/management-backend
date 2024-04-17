@@ -1,15 +1,15 @@
-function addAUser(email, password, firstname, surname, staffcode, school_id) {
+function addAUser() {
   return `INSERT INTO users
                         (users.email, users.password, users.firstname, users.surname, users.staffcode, users.school_id)
                                 VALUES 
-                                        ("${email}", "${password}", "${firstname}", "${surname}", "${staffcode}", ${school_id});`;
+                                        (?, ?, ?, ?, ?, ?);`;
 }
 
-function addAToken(id, token) {
+function addAToken() {
   return `INSERT INTO tokens
                 (user_id, token)
                     VALUES
-                        (${id}, "${token}");`;
+                        (?, ?);`;
 }
 
 function deleteAToken(token) {
@@ -22,21 +22,22 @@ function deleteAllTokens(id) {
             WHERE tokens.user_id LIKE ${id};`;
 }
 
-function deleteAUser(user_id) {
+function deleteAUser() {
   return `DELETE users, assign_participants, groups, meetings, tokens, todos FROM users
               LEFT JOIN assign_participants ON users.user_id = assign_participants.user_id
                     LEFT JOIN groups ON users.user_id = groups.user_id
                         LEFT JOIN meetings ON users.user_id = meetings.owner
                               LEFT JOIN tokens ON users.user_id = tokens.user_id
                                       LEFT JOIN todos ON users.user_id = todos.created_by
-                                            WHERE users.user_id = ${user_id};`;
+                                            WHERE users.user_id = ?;`;
 }
 
-function updateAUser(key, value, token) {
+//Not working - string in params causes issue
+function updateAUser() {
   return `UPDATE users
             JOIN tokens ON users.user_id = tokens.user_id
-                SET ${key} = "${value}"
-                    WHERE tokens.token LIKE "${token}";`;
+                SET ? = ?
+                    WHERE tokens.token LIKE ?;`;
 }
 
 function getUserIDFromToken(token) {
@@ -65,10 +66,10 @@ function getUserIDFromStaffCode(staffcode) {
                   WHERE users.staffcode LIKE "${staffcode}";`;
 }
 
-function getUserDetailsFromToken(token) {
+function getUserDetailsFromToken() {
   return `SELECT * FROM users
                     JOIN tokens ON users.user_id = tokens.user_id
-                        WHERE tokens.token LIKE "${token}";`;
+                        WHERE tokens.token LIKE ?;`;
 }
 
 function getAllUsers() {
@@ -80,9 +81,9 @@ function getUserManager(id) {
                         WHERE users.user_id LIKE "${id}";`;
 }
 
-function getUserGroups(id) {
+function getUserGroups() {
   return `SELECT * FROM groups
-                        WHERE groups.user_id LIKE ${id};`;
+                        WHERE groups.user_id LIKE ?;`;
 }
 
 function getGroupSchool(group_id) {
@@ -90,43 +91,43 @@ function getGroupSchool(group_id) {
               WHERE assign_groups.group_id = ${group_id};`;
 }
 
-function addUserToGroups(user_id, group_id, school_id) {
+function addUserToGroups() {
   return `INSERT INTO groups
               (user_id, group_id, school_id)
                     VALUES 
-                        (${user_id}, ${group_id}, ${school_id});`;
+                        (?, ?, ?);`;
 }
 
-function addUserGroup(group_name, school_id) {
+function addUserGroup() {
   return `INSERT INTO assign_groups
               (group_name, school_id)
                     VALUES 
-                        ("${group_name}", ${school_id});`;
+                        (?, ?);`;
 }
 
-function updateUserGroupNames(user_id) {
+function updateUserGroupNames() {
   return `UPDATE groups
             JOIN assign_groups ON groups.group_id = assign_groups.group_id
                  SET groups.group_name = assign_groups.group_name
-                        WHERE groups.group_id = assign_groups.group_id AND groups.user_id = ${user_id};`;
+                        WHERE groups.group_id = assign_groups.group_id AND groups.user_id = ?;`;
 }
 
-function updateUserSchoolNames(user_id) {
+function updateUserSchoolNames() {
   return `UPDATE users
             JOIN schools ON users.school_id = schools.school_id
                  SET users.school = schools.school
-                        WHERE users.school_id = schools.school_id AND users.user_id = ${user_id};`;
+                        WHERE users.school_id = schools.school_id AND users.user_id = ?;`;
 }
 
-function deleteUserFromGroup(user_id, group_id) {
+function deleteUserFromGroup() {
   return `DELETE groups FROM groups
-              WHERE group_id LIKE ${group_id} AND user_id LIKE ${user_id};`;
+              WHERE group_id LIKE ? AND user_id LIKE ?;`;
 }
 
-function deleteUserGroup(group_id) {
+function deleteUserGroup() {
   return `DELETE groups, assign_groups FROM groups
                 JOIN assign_groups ON groups.group_id = assign_groups.group_id
-                      WHERE groups.group_id LIKE ${group_id};`;
+                      WHERE groups.group_id LIKE ?;`;
 }
 
 module.exports = {

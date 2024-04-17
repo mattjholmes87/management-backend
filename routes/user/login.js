@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
   const results = await asyncMySQL(`SELECT * FROM users
                                      WHERE email LIKE "${email}" AND password LIKE "${password}";`);
 
-  if (results.length > 0) {
+  if (results.length === 1) {
     token = getRid();
     res.send({ status: 1, reason: "Match Found!", token: token });
 

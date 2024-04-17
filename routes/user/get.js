@@ -10,7 +10,9 @@ const {
 
 //Get single user
 router.get("/id", checkToken, async (req, res) => {
-  const results = await asyncMySQL(getUserDetailsFromToken(req.headers.token));
+  const results = await asyncMySQL(getUserDetailsFromToken(), [
+    req.headers.token,
+  ]);
   res.send(results[0]);
 });
 
@@ -23,7 +25,7 @@ router.get("/", async (req, res) => {
 //Get single users Groups
 router.get("/groups", checkToken, async (req, res) => {
   const id = req.authenticatedUserID;
-  const results = await asyncMySQL(getUserGroups(id));
+  const results = await asyncMySQL(getUserGroups(), [id]);
   res.send(results);
 });
 

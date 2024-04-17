@@ -42,12 +42,17 @@ router.post("/new", async (req, res) => {
 
   //talk to DB
   try {
-    const result = await asyncMySQL(
-      addAUser(email, password, firstname, surname, staffcode, school_id)
-    );
+    const result = await asyncMySQL(addAUser(), [
+      email,
+      password,
+      firstname,
+      surname,
+      staffcode,
+      school_id,
+    ]);
 
-    await asyncMySQL(addAToken(result.insertId, token));
-    await asyncMySQL(updateUserSchoolNames(result.insertId));
+    await asyncMySQL(addAToken(), [result.insertId, token]);
+    await asyncMySQL(updateUserSchoolNames(), [result.insertId]);
 
     res.send({ status: 1, reason: "New user added", token: token });
   } catch (e) {
@@ -75,8 +80,8 @@ router.post(
       return;
     }
     try {
-      await asyncMySQL(addUserToGroups(user_id, group_id, schoolid));
-      await asyncMySQL(updateUserGroupNames(user_id));
+      await asyncMySQL(addUserToGroups(), [user_id, group_id, schoolid]);
+      await asyncMySQL(updateUserGroupNames(), [user_id]);
     } catch (e) {
       res.send({
         status: 0,
@@ -100,7 +105,7 @@ router.post("/groups/new", checkToken, checkUserLevel, async (req, res) => {
     return;
   }
   try {
-    await asyncMySQL(addUserGroup(group_name, schoolid));
+    await asyncMySQL(addUserGroup(), [group_name, schoolid]);
   } catch (e) {
     res.send({
       status: 0,

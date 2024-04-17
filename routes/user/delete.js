@@ -16,7 +16,7 @@ router.delete("/", checkToken, checkUserLevel, async (req, res) => {
     res.send({ status: 0, reason: "User level too low" });
     return;
   }
-  await asyncMySQL(deleteAUser(req.headers.user_id));
+  await asyncMySQL(deleteAUser(), [req.headers.user_id]);
 
   res.send({ status: 1, reason: "User deleted" });
 });
@@ -31,7 +31,7 @@ router.delete("/groups", checkToken, checkUserLevel, async (req, res) => {
   }
 
   try {
-    await asyncMySQL(deleteUserFromGroup(user_id, group_id));
+    await asyncMySQL(deleteUserFromGroup(), [group_id, user_id]);
   } catch (e) {
     res.send({
       status: 0,
@@ -53,7 +53,7 @@ router.delete("/grous/remove", checkToken, checkUserLevel, async (req, res) => {
   }
 
   try {
-    await asyncMySQL(deleteUserGroup(group_id));
+    await asyncMySQL(deleteUserGroup(), [group_id]);
   } catch (e) {
     res.send({
       status: 0,
