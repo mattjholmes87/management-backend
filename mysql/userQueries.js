@@ -77,7 +77,7 @@ function getAllUsers() {
 }
 
 function getUserManager() {
-  return `SELECT users.line_manager FROM users
+  return `SELECT users.line_manager AS lineManager FROM users
                         WHERE users.user_id LIKE ?;`;
 }
 

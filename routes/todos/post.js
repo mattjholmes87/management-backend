@@ -15,10 +15,10 @@ router.post("/postTodo", checkToken, async (req, res) => {
   if (result.length === 0) {
     manager = null;
   } else {
-    manager = result[0].line_manager;
+    manager = result[0].lineManager;
   }
   console.log(id, result, manager);
-  const { name, body, priority = 0, complete_by = id, category = 1 } = req.body;
+  const { name, body, priority = 0, completeBy = id, category = 1 } = req.body;
 
   if (!name || !body) {
     res.send({ status: 0, reason: "Missing Title and/or Body of Todo" });
@@ -30,7 +30,7 @@ router.post("/postTodo", checkToken, async (req, res) => {
       name,
       body,
       priority,
-      complete_by,
+      completeBy,
       manager,
       id,
       category,

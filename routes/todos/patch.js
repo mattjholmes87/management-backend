@@ -7,35 +7,27 @@ const { getDateTimeStamp } = require("../utils");
 
 //Update a User Todos - NOT WORKING SAME STRING ERROR
 router.patch("/", checkToken, async (req, res) => {
-  const user_id = req.authenticatedUserID;
+  const userID = req.authenticatedUserID;
 
   const {
-    todo_id,
+    todoID,
     name,
     body,
     priority,
-    due_date,
-    display_on,
+    dueDate,
+    displayOn,
     completed,
     category,
-    signed_off,
+    signedOff,
   } = req.body;
 
-  if (!todo_id) {
+  if (!todoID) {
     res.send({ status: 0, reason: "Missing Todo ID" });
     return;
   }
 
   if (
-    !(
-      name ||
-      body ||
-      priority ||
-      due_date ||
-      display_on ||
-      completed ||
-      category
-    )
+    !(name || body || priority || dueDate || displayOn || completed || category)
   ) {
     res.send({ status: 0, reason: "Missing or invalid data to update" });
     return;
@@ -43,18 +35,18 @@ router.patch("/", checkToken, async (req, res) => {
 
   for (const [key, value] of Object.entries(req.body)) {
     if (key === "completed" || key === "signed_off") {
-      await asyncMySQL(updateTodoByID(), [key, value, todo_id, user_id]);
+      await asyncMySQL(updateTodoByID(), [key, value, todoID, userID]);
       await asyncMySQL(updateTodoByID(), [
         `${key}_on`,
         getDateTimeStamp(),
-        todo_id,
-        user_id,
+        todoID,
+        userID,
       ]);
-      await asyncMySQL(updateTodoDate(), [key, user_id, key]);
+      await asyncMySQL(updateTodoDate(), [key, userID, key]);
     } else if (key === "priority") {
-      await asyncMySQL(updateTodoByID(), [key, value, todo_id, user_id]);
+      await asyncMySQL(updateTodoByID(), [key, value, todoID, userID]);
     } else {
-      await asyncMySQL(updateTodoByID(), [key, value, todo_id, user_id]);
+      await asyncMySQL(updateTodoByID(), [key, value, todoID, userID]);
     }
   }
 
