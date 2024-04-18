@@ -95,7 +95,6 @@ router.post(
 
 //Add a new group
 router.post("/groups/new", checkToken, checkUserLevel, async (req, res) => {
-  const id = req.authenticatedUserId;
   const level = req.authenticatedUserLevel;
   const schoolId = req.authenticatedUserSchoolId;
   const { groupName } = req.body;
