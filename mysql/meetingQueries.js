@@ -1,4 +1,4 @@
-function getMeetingByID() {
+function getMeetingById() {
   return `SELECT * FROM meetings
                 JOIN assign_participants ON meetings.meeting_id = assign_participants.meeting_id
                         WHERE assign_participants.user_id LIKE ?;`;
@@ -11,8 +11,8 @@ function createAMeeting() {
                     (?, ?, ?, ?);`;
 }
 
-function findMeetingID() {
-  return `SELECT meeting_id AS meetingID FROM meetings
+function findMeetingId() {
+  return `SELECT meeting_id AS meetingId FROM meetings
             WHERE meetings.owner = ? AND meetings.title = ?;`;
 }
 
@@ -29,17 +29,17 @@ function deleteAMeeting() {
                         WHERE meetings.meeting_id LIKE ? AND meetings.owner = ?;`;
 }
 
-function updateMeetingByID(key) {
+function updateMeetingById(key) {
   return `UPDATE meetings 
                           SET ${key} = ?
                                    WHERE meetings.meeting_id LIKE ? AND meetings.owner = ?;`;
 }
 
 module.exports = {
-  getMeetingByID,
+  getMeetingById,
   createAMeeting,
-  findMeetingID,
+  findMeetingId,
   addParticipants,
   deleteAMeeting,
-  updateMeetingByID,
+  updateMeetingById,
 };

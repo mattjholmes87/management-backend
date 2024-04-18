@@ -6,9 +6,16 @@ const { deleteAMeeting } = require("../../mysql/meetingQueries");
 
 //Delete a User meetings
 router.delete("/", checkToken, async (req, res) => {
-  const id = req.authenticatedUserID;
+  const id = req.authenticatedUserId;
 
-  await asyncMySQL(deleteAMeeting(), [req.headers.meeting_id, id]);
+  try {
+    await asyncMySQL(deleteAMeeting(), [req.headers.meeting_id, id]);
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to delete meeting due to "${e.sqlMessage}"`,
+    });
+  }
 
   res.send({ status: 1, reason: "Meeting deleted" });
 });

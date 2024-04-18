@@ -1,9 +1,9 @@
 const asyncMySQL = require("../mysql/driver");
 const {
-  getUserIDFromToken,
-  getUserLevelFromID,
+  getUserIdFromToken,
+  getUserLevelFromId,
   getGroupSchool,
-  getUserSchoolCodeFromID,
+  getUserSchoolCodeFromId,
 } = require("../mysql/userQueries");
 
 //logging middleware
@@ -26,11 +26,11 @@ function userAgent(req, res, next) {
 //Auth Middleware
 
 async function checkToken(req, res, next) {
-  const results = await asyncMySQL(getUserIDFromToken(), [req.headers.token]);
+  const results = await asyncMySQL(getUserIdFromToken(), [req.headers.token]);
 
   if (results.length) {
-    req.authenticatedUserID = results[0].userID;
-    req.authenticatedUserSchoolID = results[0].schoolID;
+    req.authenticatedUserId = results[0].userId;
+    req.authenticatedUserSchoolId = results[0].schoolId;
     next();
     return;
   }
@@ -39,8 +39,8 @@ async function checkToken(req, res, next) {
 }
 
 async function checkUserLevel(req, res, next) {
-  const results = await asyncMySQL(getUserLevelFromID(), [
-    req.authenticatedUserID,
+  const results = await asyncMySQL(getUserLevelFromId(), [
+    req.authenticatedUserId,
   ]);
 
   if (results.length) {
@@ -52,12 +52,12 @@ async function checkUserLevel(req, res, next) {
 }
 
 async function checkGroupSchool(req, res, next) {
-  const { userID, groupID } = req.body;
-  const result1 = await asyncMySQL(getGroupSchool(), [groupID]);
-  const result2 = await asyncMySQL(getUserSchoolCodeFromID(userID));
-  req.inputUserSchoolID = result2[0].schoolID;
+  const { userId, groupId } = req.body;
+  const result1 = await asyncMySQL(getGroupSchool(), [groupId]);
+  const result2 = await asyncMySQL(getUserSchoolCodeFromId(userId));
+  req.inputUserSchoolId = result2[0].schoolId;
 
-  if (result1[0].schoolID === result2[0].schoolID) {
+  if (result1[0].schoolId === result2[0].schoolId) {
     next();
     return;
   }

@@ -12,16 +12,6 @@ function addAToken() {
                         (?, ?);`;
 }
 
-function deleteAToken(token) {
-  return `DELETE tokens FROM tokens
-            WHERE tokens.token LIKE "${token}";`;
-}
-
-function deleteAllTokens(id) {
-  return `DELETE tokens FROM tokens
-            WHERE tokens.user_id LIKE ${id};`;
-}
-
 function deleteAUser() {
   return `DELETE users, assign_participants, groups, meetings, tokens, todos FROM users
               LEFT JOIN assign_participants ON users.user_id = assign_participants.user_id
@@ -33,37 +23,37 @@ function deleteAUser() {
 }
 
 //Not working - string in params causes issue
-function updateAUser() {
+function updateAUser(key) {
   return `UPDATE users
             JOIN tokens ON users.user_id = tokens.user_id
-                SET ? = ?
+                SET ${key} = ?
                     WHERE tokens.token LIKE ?;`;
 }
 
-function getUserIDFromToken() {
-  return `SELECT users.user_id AS userID, users.school_id AS schoolID FROM users
+function getUserIdFromToken() {
+  return `SELECT users.user_id AS userId, users.school_id AS schoolId FROM users
                     JOIN tokens ON users.user_id = tokens.user_id
                         WHERE tokens.token LIKE ?;`;
 }
 
-function getUserStaffCodeFromID() {
+function getUserStaffCodeFromId() {
   return `SELECT staffcode FROM users
                   WHERE users.user_id LIKE ?;`;
 }
 
-function getUserSchoolCodeFromID() {
-  return `SELECT school_id AS schoolID FROM users
+function getUserSchoolCodeFromId() {
+  return `SELECT school_id AS schoolId FROM users
                   WHERE users.user_id LIKE ?;`;
 }
 
-function getUserLevelFromID() {
+function getUserLevelFromId() {
   return `SELECT user_level AS userLevel FROM users
               WHERE users.user_id LIKE ?;`;
 }
 
-function getUserIDFromStaffCode(staffcode) {
+function getUserIdFromStaffCode() {
   return `SELECT user_id FROM users
-                  WHERE users.staffcode LIKE "${staffcode}";`;
+                  WHERE users.staffcode LIKE ?;`;
 }
 
 function getUserDetailsFromToken() {
@@ -87,7 +77,7 @@ function getUserGroups() {
 }
 
 function getGroupSchool() {
-  return `SELECT assign_groups.school_id AS schoolID FROM assign_groups
+  return `SELECT assign_groups.school_id AS schoolId FROM assign_groups
               WHERE assign_groups.group_id = ?;`;
 }
 
@@ -137,18 +127,16 @@ module.exports = {
   addUserGroup,
   updateUserGroupNames,
   updateUserSchoolNames,
-  deleteAToken,
   deleteAUser,
   updateAUser,
-  getUserIDFromToken,
+  getUserIdFromToken,
   getUserDetailsFromToken,
-  getUserStaffCodeFromID,
-  getUserLevelFromID,
-  getUserIDFromStaffCode,
-  getUserSchoolCodeFromID,
+  getUserStaffCodeFromId,
+  getUserLevelFromId,
+  getUserIdFromStaffCode,
+  getUserSchoolCodeFromId,
   getGroupSchool,
   getAllUsers,
-  deleteAllTokens,
   deleteUserFromGroup,
   deleteUserGroup,
   getUserManager,

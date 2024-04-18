@@ -5,75 +5,52 @@ const { kw } = require("../../kw");
 const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
 const { updateAUser } = require("../../mysql/userQueries");
+const { camelCaseToSnakeCase } = require("../utils");
 
 //Update a user - NOT WORKING
 router.patch("/", checkToken, async (req, res) => {
+  const { email, password, firstname, surname, staffcode, school, userLevel } =
+    req.body;
+
   if (
     !(
-      req.body.email ||
-      req.body.password ||
-      req.body.firstname ||
-      req.body.surname ||
-      req.body.staffcode ||
-      req.body.school ||
-      req.body.user_level
+      email ||
+      password ||
+      firstname ||
+      surname ||
+      staffcode ||
+      school ||
+      userLevel
     )
   ) {
     res.send({ status: 0, reason: "Missing or invalid data to update" });
     return;
   }
 
-  //Rehash password
-  if (req.body.password) {
-    await asyncMySQL(updateAUser(), [
-      "password",
-      sha256(req.body.password + kw),
-      req.headers.token,
-    ]);
+  for (const [key, value] of Object.entries(req.body)) {
+    const keyArr = [
+      "email",
+      "firstname",
+      "surname",
+      "staffcode",
+      "school",
+      "userLevel",
+    ];
+    console.log(key);
+    if (key === "password") {
+      await asyncMySQL(updateAUser(key), [
+        sha256(password + kw),
+        req.headers.token,
+      ]);
+    } else if (keyArr.includes(key)) {
+      let snakeKey = camelCaseToSnakeCase(key);
+      await asyncMySQL(updateAUser(snakeKey), [value, req.headers.token]);
+    } else {
+      res.send({ status: 0, reason: "Invalid Key" });
+      return;
+    }
   }
 
-  if (req.body.email) {
-    await asyncMySQL(updateAUser(), [
-      "email",
-      req.body.email,
-      req.headers.token,
-    ]);
-  }
-  if (req.body.firstname) {
-    await asyncMySQL(updateAUser(), [
-      "firstname",
-      req.body.firstname,
-      req.headers.token,
-    ]);
-  }
-  if (req.body.surname) {
-    await asyncMySQL(updateAUser(), [
-      "surname",
-      req.body.surname,
-      req.headers.token,
-    ]);
-  }
-  if (req.body.staffcode) {
-    await asyncMySQL(updateAUser(), [
-      "staffcode",
-      req.body.staffcode,
-      req.headers.token,
-    ]);
-  }
-  if (req.body.school) {
-    await asyncMySQL(updateAUser(), [
-      "school",
-      req.body.school,
-      req.headers.token,
-    ]);
-  }
-  if (req.body.user_level) {
-    await asyncMySQL(updateAUser(), [
-      "user_level",
-      req.body.user_level,
-      req.headers.token,
-    ]);
-  }
   res.send({ status: 1, reason: "User updated" });
 });
 

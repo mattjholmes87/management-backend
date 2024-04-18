@@ -5,11 +5,13 @@ const { getRid } = require("../utils");
 const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
 const { kw } = require("../../kw");
+const { getUserIdFromToken } = require("../../mysql/userQueries");
 const {
+  findUserByEmailAndPassword,
+  addTokenOnLogin,
   deleteAToken,
-  getUserIDFromToken,
   deleteAllTokens,
-} = require("../../mysql/userQueries");
+} = require("../../mysql/loginQueries");
 
 //Login
 router.post("/", async (req, res) => {
@@ -17,18 +19,16 @@ router.post("/", async (req, res) => {
 
   password = sha256(password + kw);
 
-  const results = await asyncMySQL(`SELECT * FROM users
-                                     WHERE email LIKE "${email}" AND password LIKE "${password}";`);
+  const results = await asyncMySQL(findUserByEmailAndPassword(), [
+    email,
+    password,
+  ]);
 
   if (results.length === 1) {
     token = getRid();
     res.send({ status: 1, reason: "Match Found!", token: token });
 
-    await asyncMySQL(`INSERT INTO tokens
-                        (user_id, token)
-                            VALUES
-                                ("${results[0].user_id}", "${token}");`);
-
+    await asyncMySQL(addTokenOnLogin(), [results[0].userId, token]);
     return;
   }
   res.send({ status: 0, reason: "Wrong email and/or password" });
@@ -40,7 +40,7 @@ router.delete("/", checkToken, async (req, res) => {
     res.send({ status: "0", reason: "No token" });
     return;
   }
-  await asyncMySQL(deleteAToken(req.headers.token));
+  await asyncMySQL(deleteAToken(), [req.headers.token]);
 
   res.send({ status: 1, reason: "Logged out succesfully" });
 });
@@ -51,8 +51,8 @@ router.delete("/logoutAll", checkToken, async (req, res) => {
     res.send({ status: "0", reason: "No token" });
     return;
   }
-  const id = await asyncMySQL(getUserIDFromToken(req.headers.token));
-  await asyncMySQL(deleteAllTokens(id[0].user_id));
+  const id = await asyncMySQL(getUserIdFromToken(), [req.headers.token]);
+  await asyncMySQL(deleteAllTokens(), [id[0].userId]);
   res.send({ status: 1, reason: "Logged out succesfully" });
 });
 

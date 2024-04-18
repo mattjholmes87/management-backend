@@ -46,7 +46,7 @@ router.delete("/groups", checkToken, checkUserLevel, async (req, res) => {
 //delete a group
 router.delete("/grous/remove", checkToken, checkUserLevel, async (req, res) => {
   const level = req.authenticatedUserLevel;
-  const { user_id, group_id } = req.headers;
+  const { group_id } = req.headers;
   if (level >= 3) {
     res.send({ status: 0, reason: "User level too low" });
     return;

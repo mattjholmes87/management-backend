@@ -4,18 +4,18 @@ const { checkToken } = require("../../middleware/test");
 const asyncMySQL = require("../../mysql/driver");
 const {
   addParticipants,
-  updateMeetingByID,
+  updateMeetingById,
 } = require("../../mysql/meetingQueries");
 const { camelCaseToSnakeCase } = require("../utils");
 
 //Update a User meetings
 router.patch("/", checkToken, async (req, res) => {
-  const id = req.authenticatedUserID;
+  const id = req.authenticatedUserId;
 
-  const { meetingID, title, agenda, dateOfMeeting, dateOfNext, participants } =
+  const { meetingId, title, agenda, dateOfMeeting, dateOfNext, participants } =
     req.body;
 
-  if (!meetingID) {
+  if (!meetingId) {
     res.send({ status: 0, reason: "Missing Meeting ID" });
     return;
   }
@@ -28,7 +28,7 @@ router.patch("/", checkToken, async (req, res) => {
 
   for (const [key, value] of Object.entries(req.body)) {
     const keyArr = [
-      "meetingID",
+      "meetingId",
       "owner",
       "title",
       "agenda",
@@ -51,7 +51,14 @@ router.patch("/", checkToken, async (req, res) => {
       }
     } else if (keyArr.includes(key)) {
       let snakeKey = camelCaseToSnakeCase(key);
-      await asyncMySQL(updateMeetingByID(snakeKey), [value, meetingID, id]);
+      try {
+        await asyncMySQL(updateMeetingById(snakeKey), [value, meetingId, id]);
+      } catch (e) {
+        res.send({
+          status: 0,
+          reason: `Unable to update meeting due to "${e.sqlMessage}"`,
+        });
+      }
     } else {
       res.send({ status: 0, reason: "Invalid Key" });
       return;

@@ -1,6 +1,3 @@
-const { kw } = require("../kw");
-const sha256 = require("sha256");
-
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }

@@ -20,7 +20,7 @@ const {
 
 //Add a user
 router.post("/new", async (req, res) => {
-  let { email, password, firstname, surname, staffcode, school_id } = req.body;
+  let { email, password, firstname, surname, staffcode, schoolId } = req.body;
 
   //Check they exist
   if (
@@ -29,7 +29,7 @@ router.post("/new", async (req, res) => {
     !staffcode ||
     !firstname ||
     !surname ||
-    !school_id
+    !schoolId
   ) {
     res.send({ status: 0, reason: "Missing data to register" });
   }
@@ -48,7 +48,7 @@ router.post("/new", async (req, res) => {
       firstname,
       surname,
       staffcode,
-      school_id,
+      schoolId,
     ]);
 
     await asyncMySQL(addAToken(), [result.insertId, token]);
@@ -72,16 +72,16 @@ router.post(
   checkGroupSchool,
   async (req, res) => {
     const level = req.authenticatedUserLevel;
-    const schoolID = req.inputUserSchoolID;
-    const { userID, groupID } = req.body;
+    const schoolId = req.inputUserSchoolId;
+    const { userId, groupId } = req.body;
 
     if (level >= 4) {
       res.send({ status: 0, reason: "User level too low" });
       return;
     }
     try {
-      await asyncMySQL(addUserToGroups(), [userID, groupID, schoolID]);
-      await asyncMySQL(updateUserGroupNames(), [userID]);
+      await asyncMySQL(addUserToGroups(), [userId, groupId, schoolId]);
+      await asyncMySQL(updateUserGroupNames(), [userId]);
     } catch (e) {
       res.send({
         status: 0,
@@ -95,17 +95,17 @@ router.post(
 
 //Add a new group
 router.post("/groups/new", checkToken, checkUserLevel, async (req, res) => {
-  const id = req.authenticatedUserID;
+  const id = req.authenticatedUserId;
   const level = req.authenticatedUserLevel;
-  const schoolid = req.authenticatedUserSchoolID;
-  const { group_name } = req.body;
+  const schoolId = req.authenticatedUserSchoolId;
+  const { groupName } = req.body;
 
   if (level >= 3) {
     res.send({ status: 0, reason: "User level too low" });
     return;
   }
   try {
-    await asyncMySQL(addUserGroup(), [group_name, schoolid]);
+    await asyncMySQL(addUserGroup(), [groupName, schoolId]);
   } catch (e) {
     res.send({
       status: 0,

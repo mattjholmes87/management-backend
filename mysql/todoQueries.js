@@ -5,27 +5,27 @@ function addTodo() {
                         (?, ?, ?, ?, ?, ?, ?);`;
 }
 
-function getTodoByID(id) {}
+function getTodoById() {}
 
 function getTodoByName(user_id, name) {
   return `SELECT * FROM todos
                 WHERE todos.name LIKE "${name}" AND todos.complete_by = ${user_id};`;
 }
 
-function deleteTodoByID() {
+function deleteTodoById() {
   return `DELETE todos FROM todos
     WHERE todos.todo_id LIKE ? AND todos.complete_by = ?;`;
 }
 
-function updateTodoByID() {
+function updateTodoById(key) {
   return `UPDATE todos 
-                        SET ? = ?
+                        SET ${key} = ?
                                  WHERE todos.todo_id LIKE ? AND todos.created_by = ?;`;
 }
 
-function updateTodoDate() {
+function updateTodoDate(key) {
   return `UPDATE todos
-                  SET ?_on = NULL WHERE (created_by = ? AND ? = '0');`;
+                  SET ${key}_on = NULL WHERE (created_by = ? AND ${key} = '0');`;
 }
 
 function getUserAllTodos() {
@@ -55,10 +55,10 @@ function getManagerAllSetTodos() {
 
 module.exports = {
   addTodo,
-  getTodoByID,
+  getTodoById,
   getTodoByName,
-  deleteTodoByID,
-  updateTodoByID,
+  deleteTodoById,
+  updateTodoById,
   updateTodoDate,
   getUserAllTodos,
   getUserPriorityUserTodos,

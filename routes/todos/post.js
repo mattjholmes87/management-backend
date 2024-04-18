@@ -9,7 +9,7 @@ const { getUserManager } = require("../../mysql/userQueries");
 
 //Post todo
 router.post("/postTodo", checkToken, async (req, res) => {
-  const id = req.authenticatedUserID;
+  const id = req.authenticatedUserId;
   const result = await asyncMySQL(getUserManager(), [id]);
 
   if (result.length === 0) {
@@ -17,7 +17,6 @@ router.post("/postTodo", checkToken, async (req, res) => {
   } else {
     manager = result[0].lineManager;
   }
-  console.log(id, result, manager);
   const { name, body, priority = 0, completeBy = id, category = 1 } = req.body;
 
   if (!name || !body) {
@@ -35,7 +34,6 @@ router.post("/postTodo", checkToken, async (req, res) => {
       id,
       category,
     ]);
-    res.send({ status: 1, reason: "todo added" });
   } catch (e) {
     console.log(e);
     res.send({
@@ -43,6 +41,7 @@ router.post("/postTodo", checkToken, async (req, res) => {
       reason: `Unable to add todo due to "${e.sqlMessage}"`,
     });
   }
+  res.send({ status: 1, reason: "todo added" });
 });
 
 module.exports = router;
