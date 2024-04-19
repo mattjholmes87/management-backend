@@ -15,12 +15,23 @@ const {
 
 //Login
 router.post("/", async (req, res) => {
+  // if (Object.keys(req.body).length === 0) {
+  //   res.send({ status: 0, reason: "missing data in body" });
+  //   return;
+  // }
+
   let { email, password } = req.body;
 
-  password = sha256(password + kw);
-  if (!email && password) {
-    res.send({ status: 0, reason: "Missing email or password" });
+  if (!email || !password || Object.keys(req.body).length != 2) {
+    res.send({
+      status: 0,
+      reason: "Missing email or password or too much data",
+    });
+    return;
   }
+
+  password = sha256(password + kw);
+
   try {
     const results = await asyncMySQL(findUserByEmailAndPassword(), [
       email,
