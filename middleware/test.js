@@ -26,12 +26,19 @@ function userAgent(req, res, next) {
 //Auth Middleware
 
 async function checkToken(req, res, next) {
-  const results = await asyncMySQL(getUserIdFromToken(), [req.headers.token]);
-
-  if (results.length) {
-    req.authenticatedUserId = results[0].userId;
-    req.authenticatedUserSchoolId = results[0].schoolId;
-    next();
+  try {
+    const results = await asyncMySQL(getUserIdFromToken(), [req.headers.token]);
+    if (results.length) {
+      req.authenticatedUserId = results[0].userId;
+      req.authenticatedUserSchoolId = results[0].schoolId;
+      next();
+      return;
+    }
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to verify token due to "${e.sqlMessage}"`,
+    });
     return;
   }
 
@@ -39,28 +46,46 @@ async function checkToken(req, res, next) {
 }
 
 async function checkUserLevel(req, res, next) {
-  const results = await asyncMySQL(getUserLevelFromId(), [
-    req.authenticatedUserId,
-  ]);
-
-  if (results.length) {
-    req.authenticatedUserLevel = results[0].userLevel;
-    next();
+  try {
+    const results = await asyncMySQL(getUserLevelFromId(), [
+      req.authenticatedUserId,
+    ]);
+    if (results.length) {
+      req.authenticatedUserLevel = results[0].userLevel;
+      next();
+      return;
+    }
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to get user level due to "${e.sqlMessage}"`,
+    });
     return;
   }
+
   res.send({ status: 0, reason: "Bad Token for User Level" });
 }
 
 async function checkGroupSchool(req, res, next) {
   const { userId, groupId } = req.body;
-  const result1 = await asyncMySQL(getGroupSchool(), [groupId]);
-  const result2 = await asyncMySQL(getUserSchoolCodeFromId(userId));
-  req.inputUserSchoolId = result2[0].schoolId;
 
-  if (result1[0].schoolId === result2[0].schoolId) {
-    next();
+  try {
+    const result1 = await asyncMySQL(getGroupSchool(), [groupId]);
+    const result2 = await asyncMySQL(getUserSchoolCodeFromId(userId));
+    req.inputUserSchoolId = result2[0].schoolId;
+
+    if (result1[0].schoolId === result2[0].schoolId) {
+      next();
+      return;
+    }
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to remove group due to "${e.sqlMessage}"`,
+    });
     return;
   }
+
   res.send({ status: 0, reason: "Group does not belong to your school" });
 }
 
