@@ -38,13 +38,27 @@ router.patch("/", checkToken, async (req, res) => {
     ];
     console.log(key);
     if (key === "password") {
-      await asyncMySQL(updateAUser(key), [
-        sha256(password + kw),
-        req.headers.token,
-      ]);
+      try {
+        await asyncMySQL(updateAUser(key), [
+          sha256(password + kw),
+          req.headers.token,
+        ]);
+      } catch (e) {
+        res.send({
+          status: 0,
+          reason: `Unable to updated password due to "${e.sqlMessage}"`,
+        });
+      }
     } else if (keyArr.includes(key)) {
-      let snakeKey = camelCaseToSnakeCase(key);
-      await asyncMySQL(updateAUser(snakeKey), [value, req.headers.token]);
+      try {
+        let snakeKey = camelCaseToSnakeCase(key);
+        await asyncMySQL(updateAUser(snakeKey), [value, req.headers.token]);
+      } catch (e) {
+        res.send({
+          status: 0,
+          reason: `Unable to update ${key} due to "${e.sqlMessage}"`,
+        });
+      }
     } else {
       res.send({ status: 0, reason: "Invalid Key" });
       return;

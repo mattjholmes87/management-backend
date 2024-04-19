@@ -18,19 +18,29 @@ router.post("/", async (req, res) => {
   let { email, password } = req.body;
 
   password = sha256(password + kw);
-
-  const results = await asyncMySQL(findUserByEmailAndPassword(), [
-    email,
-    password,
-  ]);
-
-  if (results.length === 1) {
-    token = getRid();
-    res.send({ status: 1, reason: "Match Found!", token: token });
-
-    await asyncMySQL(addTokenOnLogin(), [results[0].userId, token]);
-    return;
+  if (!email && password) {
+    res.send({ status: 0, reason: "Missing email or password" });
   }
+  try {
+    const results = await asyncMySQL(findUserByEmailAndPassword(), [
+      email,
+      password,
+    ]);
+
+    if (results.length === 1) {
+      token = getRid();
+      res.send({ status: 1, reason: "Match Found!", token: token });
+
+      await asyncMySQL(addTokenOnLogin(), [results[0].userId, token]);
+      return;
+    }
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to login due to "${e.sqlMessage}"`,
+    });
+  }
+
   res.send({ status: 0, reason: "Wrong email and/or password" });
 });
 
@@ -40,9 +50,17 @@ router.delete("/", checkToken, async (req, res) => {
     res.send({ status: "0", reason: "No token" });
     return;
   }
-  await asyncMySQL(deleteAToken(), [req.headers.token]);
-
-  res.send({ status: 1, reason: "Logged out succesfully" });
+  try {
+    await asyncMySQL(deleteAToken(), [req.headers.token]);
+    res.send({ status: 1, reason: "Logged out succesfully" });
+    return;
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to logout due to "${e.sqlMessage}"`,
+    });
+    return;
+  }
 });
 
 //Logout all accounts of user
@@ -51,9 +69,18 @@ router.delete("/logoutAll", checkToken, async (req, res) => {
     res.send({ status: "0", reason: "No token" });
     return;
   }
-  const id = await asyncMySQL(getUserIdFromToken(), [req.headers.token]);
-  await asyncMySQL(deleteAllTokens(), [id[0].userId]);
-  res.send({ status: 1, reason: "Logged out succesfully" });
+  try {
+    const id = await asyncMySQL(getUserIdFromToken(), [req.headers.token]);
+    await asyncMySQL(deleteAllTokens(), [id[0].userId]);
+    res.send({ status: 1, reason: "Logged out succesfully" });
+    return;
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to logout all accounts due to "${e.sqlMessage}"`,
+    });
+    return;
+  }
 });
 
 module.exports = router;
