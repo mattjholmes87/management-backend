@@ -9,7 +9,6 @@ const { getDateTimeStamp } = require("../utils");
 router.get("/todoData", checkToken, async (req, res) => {
   const id = req.authenticatedUserId;
   const timeDateStamp = getDateTimeStamp();
-
   try {
     const todos = await asyncMySQL(getUserAllTodos(), [id, timeDateStamp]);
     res.send(todos);

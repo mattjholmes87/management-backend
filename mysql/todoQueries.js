@@ -29,7 +29,7 @@ function updateTodoDate(key) {
 }
 
 function getUserAllTodos() {
-  return `SELECT * FROM todos
+  return `SELECT body, category, complete_by AS completeBy, completed, created_by AS createdBy, created_on AS createdOn, display_on AS displayOn, due_date AS dueDate, managed_by AS managedBy, meeting_id AS meetingId, name, priority, signed_off AS signedOff, signed_off_on AS signedOffOn, todo_id AS todoId FROM todos
                 WHERE todos.complete_by LIKE ? AND todos.display_on < ?;`;
 }
 

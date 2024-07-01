@@ -6,6 +6,8 @@ const {
   getAllUsers,
   getUserDetailsFromToken,
   getUserGroups,
+  getAllSchools,
+  getLineManagerReportees,
 } = require("../../mysql/userQueries");
 
 //Get single user
@@ -32,6 +34,34 @@ router.get("/", async (req, res) => {
     res.send({
       status: 0,
       reason: `Unable to get all users due to "${e.sqlMessage}"`,
+    });
+  }
+});
+
+//Get all users - MUST BE DELETED
+router.get("/reportees", checkToken, async (req, res) => {
+  try {
+    const id = req.authenticatedUserId;
+    const results = await asyncMySQL(getLineManagerReportees(), [id]);
+    res.send(results);
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to get all users due to "${e.sqlMessage}"`,
+    });
+    return;
+  }
+});
+
+//Get all schools - Needed
+router.get("/schools", async (req, res) => {
+  try {
+    const results = await asyncMySQL(getAllSchools());
+    res.send(results);
+  } catch (e) {
+    res.send({
+      status: 0,
+      reason: `Unable to get all schools due to "${e.sqlMessage}"`,
     });
   }
 });

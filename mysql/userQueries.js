@@ -66,6 +66,10 @@ function getAllUsers() {
   return `SELECT * FROM users;`;
 }
 
+function getAllSchools() {
+  return `SELECT school, school_id AS schoolId FROM schools;`;
+}
+
 function getUserManager() {
   return `SELECT users.line_manager AS lineManager FROM users
                         WHERE users.user_id LIKE ?;`;
@@ -120,6 +124,11 @@ function deleteUserGroup() {
                       WHERE groups.group_id LIKE ?;`;
 }
 
+function getLineManagerReportees() {
+  return `SELECT users.user_id AS userId, users.user_level AS userLevel, users.firstname, users.surname, users.school, users.school_id AS schoolId, users.staffcode FROM users
+                        WHERE users.line_manager LIKE ?;`;
+}
+
 module.exports = {
   addAUser,
   addAToken,
@@ -137,6 +146,8 @@ module.exports = {
   getUserSchoolCodeFromId,
   getGroupSchool,
   getAllUsers,
+  getAllSchools,
+  getLineManagerReportees,
   deleteUserFromGroup,
   deleteUserGroup,
   getUserManager,

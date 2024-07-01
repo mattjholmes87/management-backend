@@ -32,6 +32,7 @@ router.post("/new", async (req, res) => {
     !schoolId
   ) {
     res.send({ status: 0, reason: "Missing data to register" });
+    return;
   }
 
   //manipulate input
@@ -61,6 +62,7 @@ router.post("/new", async (req, res) => {
       status: 0,
       reason: `Unable to add user due to "${e.sqlMessage}"`,
     });
+    return;
   }
 });
 

@@ -5,10 +5,10 @@ const asyncMySQL = require("../../mysql/driver");
 const { updateTodoById, updateTodoDate } = require("../../mysql/todoQueries");
 const { getDateTimeStamp, camelCaseToSnakeCase } = require("../utils");
 
-//Update a User Todos - NOT WORKING SAME STRING ERROR
+//Update a User Todos - NEED TO ADD IN TRY CATCH
 router.patch("/", checkToken, async (req, res) => {
   const userId = req.authenticatedUserId;
-
+  console.log(req.body);
   const {
     todoId,
     name,
@@ -54,6 +54,8 @@ router.patch("/", checkToken, async (req, res) => {
       "priority",
       "dueDate",
       "completeBy",
+      "createdBy",
+      "createdOn",
       "displayOn",
       "completed",
       "signedOff",
@@ -81,7 +83,7 @@ router.patch("/", checkToken, async (req, res) => {
       let snakeKey = camelCaseToSnakeCase(key);
       await asyncMySQL(updateTodoById(snakeKey), [value, todoId, userId]);
     } else {
-      res.send({ status: 0, reason: "Invalid Key" });
+      res.send({ status: 0, reason: "Invalid Key", key: key });
       return;
     }
   }
